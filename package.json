@@ -84,6 +84,7 @@
       "build.js"
     ],
     "globals": [
+      "customElements",
       "KeyboardEvent",
       "crypto",
       "msCrypto",
