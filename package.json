@@ -4,7 +4,8 @@
   "description": "Base class for all author-* custom elements (web components).",
   "main": "author-element.js",
   "scripts": {
-    "build": "rollup -c ./rollup.release.config.js",
+    "build": "npm run clean && rollup -c ./rollup.release.config.js",
+    "clean": "node clean.js",
     "publish": "npm run build && npm publish",
     "test": "echo no test"
   },
@@ -41,6 +42,7 @@
   },
   "homepage": "https://github.com/author-components/base#readme",
   "devDependencies": {
+    "fs-extra": "^7.0.1",
     "rollup": "^1.1.0",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-terser": "^4.0.2",

@@ -13,7 +13,7 @@ export default [
 			terser()
 		],
 		output: [{
-			name: 'author-element.min.js',
+			name: 'AuthorElement',
 			file: `${outdir}/author-element.min.js`,
 			format: 'iife',
 			sourcemap: true
@@ -30,7 +30,7 @@ export default [
 		],
 		output: [
 			{
-				name: 'author-element.es5.min.js',
+				name: 'AuthorElement',
 				file: `${outdir}/author-element.es5.min.js`,
 				format: 'iife',
 				sourcemap: true
@@ -44,7 +44,7 @@ export default [
 		plugins: [],
 		output: [
 			{
-				name: 'author-element.js',
+				name: 'AuthorElement',
 				file: `${outdir}/author-element.js`,
 				format: 'iife',
 				sourcemap: true
@@ -61,7 +61,7 @@ export default [
 		],
 		output: [
 			{
-				name: 'author-element.es5.js',
+				name: 'AuthorElement',
 				file: `${outdir}/author-element.es5.js`,
 				format: 'iife',
 				sourcemap: true
