@@ -4,6 +4,7 @@ import {terser} from 'rollup-plugin-terser'
 
 const input = 'author-element.js'
 const outdir = './dist'
+const format = 'iife'
 
 export default [
 	// Standard (Minified ES6)
@@ -15,7 +16,7 @@ export default [
 		output: [{
 			name: 'AuthorElement',
 			file: `${outdir}/author-element.min.js`,
-			format: 'iife',
+			format,
 			sourcemap: true
 		}]
 	},
@@ -32,7 +33,7 @@ export default [
 			{
 				name: 'AuthorElement',
 				file: `${outdir}/author-element.es5.min.js`,
-				format: 'iife',
+				format,
 				sourcemap: true
 			}
 		]
@@ -46,7 +47,7 @@ export default [
 			{
 				name: 'AuthorElement',
 				file: `${outdir}/author-element.js`,
-				format: 'iife',
+				format,
 				sourcemap: true
 			},
 		]
@@ -63,7 +64,7 @@ export default [
 			{
 				name: 'AuthorElement',
 				file: `${outdir}/author-element.es5.js`,
-				format: 'iife',
+				format,
 				sourcemap: true
 			}
 		]

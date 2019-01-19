@@ -1,90 +1,23 @@
-// Karma configuration
-require('localenvironment')
-
-var browserslist = require('browserslist')
-var reporterEngines = ['spec']
-// var reporterEngines = ['spec', 'coverage']
-var sauceConfiguration = {  // eslint-disable-line no-unused-vars
-  testName: 'Author.io Base Element',
-  build: process.env.SEMAPHORE_BUILD_NUMBER || 1,
-  recordVideo: false,
-  recordScreenshots: false
-}
-
-var b = {}
-Object.keys(browserslist.data).filter(browser => {
-  return /op_|opera|ie_mob|samsung/i.exec(browser) === null
-}).map(browserName => {
-  var browser = browserslist.data[browserName]
-  return `${browser.name} ${browser.released.pop()}`
-}).forEach(function (item, index, arr) {
-  item = item.split(' ')
-  var attr = (item[0] === 'edge' ? 'microsoft' : '') + item[0].toLowerCase()
-
-  if (attr === 'ie') {
-    attr = 'internet explorer'
-  }
-
-  b[attr] = item[1]
-})
-
-// Construct Browser Testing List
-var browsers = {}
-var keys = Object.keys(b)
-
-for (var i = 0; i < keys.length; i++) {
-  var brwsr = keys[i].replace(/\.|\s/, '_')
-
-  browsers['sl_' + brwsr + '_' + b[keys[i]].replace(/\.|\s/, '_')] = {
-    base: 'SauceLabs',
-    browserName: keys[i],
-    version: b[keys[i]]
-  }
-}
-
-browsers['sl_chrome_45'] = {
-  base: 'SauceLabs',
-  browserName: 'chrome',
-  version: '45'
-}
-
-browsers['sl_firefox_50'] = {
-  base: 'SauceLabs',
-  browserName: 'firefox',
-  version: '50'
-}
-
-// console.log(JSON.stringify(browsers, null, 2))
-var chalk = require('chalk')
-var rows = [[chalk.bold('Browser'), chalk.bold('Version')]]
-Object.keys(browsers).sort().forEach(slbrowser => {
-  rows.push([browsers[slbrowser].browserName, browsers[slbrowser].version])
-})
-
-var tablemaker = require('table').table
-console.log(tablemaker(rows, {
-  columns: {
-    1: {
-      alignment: 'right'
-    }
-  }
-}))
+const base = require('./karma.base')
 
 var getFiles = function () {
   var files = [
-    'author-element.js',
+    {
+      pattern: require('path').join(process.cwd(), './dist/author-element.es5.js'),
+      nocache: true
+    }
   ]
 
   // Run all tests by default
-  let testfiles = 'test/*.js'
+  let testfiles = 'test/es5/*.js'
 
   return files.concat([
     testfiles,
-    'test/test.html'
+    'test/es5/test.html'
   ])
 }
 
-console.log(tablemaker([[chalk.bold('Included Files')]].concat(getFiles().map(file => { return [file] }))))
+console.log(base.tablemaker([[base.chalk.bold('Included Files')]].concat(getFiles().map(file => { return [file] }))))
 
 module.exports = function (config) {
   config.set({
@@ -120,8 +53,8 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['browserify'],
-      'test/test.html': 'html2js'
+      'test/es5/**/*.js': ['browserify'],
+      'test/es5/test.html': 'html2js'
       // , 'test/lib/**/*.js': 'coverage'
     },
 
@@ -133,7 +66,7 @@ module.exports = function (config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: reporterEngines, // ['progress'],
+    reporters: base.reporterEngines, // ['progress'],
 
     // web server port
     port: 9876,
