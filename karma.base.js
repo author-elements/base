@@ -6,7 +6,7 @@ var reporterEngines = ['spec']
 // var reporterEngines = ['spec', 'coverage']
 var sauceConfiguration = { // eslint-disable-line no-unused-vars
   testName: 'Author.io Base Element',
-  build: process.env.SEMAPHORE_BUILD_NUMBER || 1,
+  build: process.env.BUILD_NUMBER || 1,
   recordVideo: false,
   recordScreenshots: false
 }

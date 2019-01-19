@@ -2,7 +2,7 @@
   "name": "@author.io/element-base",
   "version": "1.0.0",
   "description": "Base class for all author-* custom elements (web components).",
-  "main": "author-element.js",
+  "main": "dist/author-element.min.js",
   "scripts": {
     "build": "npm run clean && rollup -c ./rollup.release.config.js",
     "clean": "node clean.js",
@@ -12,6 +12,9 @@
     "test:es6": "npm run build && karma start karma.conf.es6.js && standard --verbose | snazzy",
     "test:es6-modules": "npm run build && karma start karma.conf.es6-modules.js && standard --verbose | snazzy"
   },
+  "files": [
+    "./dist/*.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/author-components/base.git"
