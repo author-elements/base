@@ -384,3 +384,5 @@ const AuthorElement = superClass => class extends superClass {
     this.addEventListener(evtName, callback)
   }
 }
+
+export default AuthorElement
