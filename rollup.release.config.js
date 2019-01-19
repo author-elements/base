@@ -5,6 +5,18 @@ import {terser} from 'rollup-plugin-terser'
 const input = 'author-element.js'
 const outdir = './dist'
 const format = 'iife'
+const pkg = require('./package.json')
+const banner = `// Copyright (c) ${(new Date()).getFullYear()} ${pkg.author.name}. ${pkg.license} licensed.\n// ${pkg.name} v${pkg.version} available at ${pkg.repository.url.replace(/git\+|https:\/\/|\.git/gi, '')}\n// Last Build: ${(new Date().toLocaleString({ timeZone: 'UTC'}))}`
+
+const output = file => {
+	return {
+		name: 'AuthorElement',
+		file: `${outdir}/${file}`,
+		format,
+		banner,
+		sourcemap: true
+	}
+}
 
 export default [
 	// Standard (Minified ES6)
@@ -13,16 +25,12 @@ export default [
 		plugins: [
 			terser()
 		],
-		output: [{
-			name: 'AuthorElement',
-			file: `${outdir}/author-element.min.js`,
-			format,
-			sourcemap: true
-		}]
+		output: [
+			output('author-element.min.js')
+		]
 	},
 
 	// Legacy (Transpiled & Minified ES5)
-	// This is only relevant to browsers.
 	{
 		input,
 		plugins: [
@@ -30,12 +38,7 @@ export default [
 			uglify()
 		],
 		output: [
-			{
-				name: 'AuthorElement',
-				file: `${outdir}/author-element.es5.min.js`,
-				format,
-				sourcemap: true
-			}
+			output('author-element.es5.min.js')
 		]
 	},
 
@@ -44,29 +47,18 @@ export default [
 		input,
 		plugins: [],
 		output: [
-			{
-				name: 'AuthorElement',
-				file: `${outdir}/author-element.js`,
-				format,
-				sourcemap: true
-			},
+			output('author-element.js')
 		]
 	},
 
 	// Development: Legacy (Transpiled & Unminified ES5)
-	// This is only relevant to browsers.
 	{
 		input,
 		plugins: [
 			buble()
 		],
 		output: [
-			{
-				name: 'AuthorElement',
-				file: `${outdir}/author-element.es5.js`,
-				format,
-				sourcemap: true
-			}
+			output('author-element.es5.js')
 		]
 	}
 ]
