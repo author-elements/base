@@ -4,7 +4,7 @@ const AuthorElement = superClass => class extends superClass {
 
     this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : ('keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode')
 
-    this.attachShadow({mode: 'open'})
+    this.attachShadow({ mode: 'open' })
 
     let container = document.createElement('div')
     container.insertAdjacentHTML('afterbegin', templateString)
@@ -79,7 +79,7 @@ const AuthorElement = superClass => class extends superClass {
             defaultValue = cfg.default || null
           }
 
-          Object.defineProperty(this.PRIVATE, name, {
+          Object.defineProperty(this.PRIVATE, name, { // eslint-disable-line accessor-pairs
             set: value => customSetter && customSetter(value)
           })
 
@@ -141,16 +141,14 @@ const AuthorElement = superClass => class extends superClass {
 
       defineReadOnlyProperty: {
         value: prop => {
-          let name = prop
-
           if (typeof prop === 'string') {
             this.PRIVATE.readOnlyProperties.push(prop)
 
-            return Object.defineProperty(this, prop, {
+            return Object.defineProperty(this, prop, { // eslint-disable-line accessor-pairs
               set (value) {
                 this.throwError({
                   type: 'readonly',
-                  vars: {prop}
+                  vars: { prop }
                 })
               }
             })
@@ -172,7 +170,7 @@ const AuthorElement = superClass => class extends superClass {
 
           this.PRIVATE.readOnlyProperties.push(prop.name)
 
-          Object.defineProperty(this, props.name, {
+          Object.defineProperty(this, prop.name, {
             set (value) {
               this.UTIL.throwError({
                 type: 'readonly',
@@ -218,21 +216,19 @@ const AuthorElement = superClass => class extends superClass {
             case 'true':
             case '':
               return this.setAttribute(attr, '')
-
-            default: return
           }
         }
       },
 
       createEvent: {
         value: (name, detail) => {
-          return new CustomEvent(name, {detail})
+          return new CustomEvent(name, { detail })
         }
       },
 
       generateGuid: {
         value: (prefix = null) => {
-          let id = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => {
+          let id = ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => { // eslint-disable-line space-infix-ops
             return (c ^ this.crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
           })
 
@@ -331,7 +327,7 @@ const AuthorElement = superClass => class extends superClass {
     })
 
     this.addEventListener('attribute.change', evt => {
-      let { attribute, oldValue, newValue } = evt.detail
+      let { attribute, newValue } = evt.detail
 
       if (this.PRIVATE.attributes.includes(attribute)) {
         if (this.PRIVATE[attribute] !== newValue) {

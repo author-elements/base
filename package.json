@@ -7,7 +7,7 @@
     "build": "npm run clean && rollup -c ./rollup.release.config.js",
     "clean": "node clean.js",
     "publish": "npm run build && npm publish",
-    "test": "echo no test"
+    "test": "karma start karma.conf.js && standard --verbose | snazzy"
   },
   "repository": {
     "type": "git",
@@ -42,14 +42,59 @@
   },
   "homepage": "https://github.com/author-components/base#readme",
   "devDependencies": {
+    "browserify": "^16.2.3",
+    "browserslist": "^4.4.1",
+    "chalk": "^2.4.2",
     "fs-extra": "^7.0.1",
+    "karma": "^3.1.4",
+    "karma-browserify": "^6.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-edge-launcher": "^0.4.2",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-html2js-preprocessor": "^1.1.0",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sauce-launcher": "^2.0.2",
+    "karma-spec-reporter": "0.0.32",
+    "karma-tap": "^4.1.4",
+    "localenvironment": "^1.0.2",
     "rollup": "^1.1.0",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-terser": "^4.0.2",
     "rollup-plugin-uglify": "^6.0.1",
     "snazzy": "^8.0.0",
     "standard": "^12.0.1",
+    "table": "^5.2.1",
     "tap": "^12.1.1",
     "tape": "^4.9.2"
+  },
+  "standard": {
+    "ignore": [
+      "_*",
+      "_**/*",
+      "test/lib/**/*",
+      "node_modules",
+      "dist/**/*",
+      "rollup*.js",
+      "karma.conf.js",
+      "build.js"
+    ],
+    "globals": [
+      "KeyboardEvent",
+      "crypto",
+      "msCrypto",
+      "CustomEvent",
+      "window",
+      "MutationObserver",
+      "DOMParser",
+      "XMLHttpRequest",
+      "FormData",
+      "btoa",
+      "localStorage",
+      "fetch",
+      "Element",
+      "HTMLElement",
+      "NodeFilter"
+    ]
   }
 }
