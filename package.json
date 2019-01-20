@@ -1,12 +1,12 @@
 {
   "name": "@author.io/element-base",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.5",
   "description": "Base class for all author-* custom elements (web components).",
   "main": "dist/author-element.min.js",
   "scripts": {
     "build": "npm run clean && rollup -c ./rollup.release.config.js",
     "clean": "node clean.js",
-    "publish": "npm run build && npm publish --access public",
+    "deploy": "npm run build && npm publish --access public",
     "test": "npm run build && karma start karma.conf.es6.js && karma start karma.conf.es6-modules.js && karma start karma.conf.es5.js && standard --verbose | snazzy",
     "test:es5": "npm run build && karma start karma.conf.es5.js && standard --verbose | snazzy",
     "test:es6": "npm run build && karma start karma.conf.es6.js && standard --verbose | snazzy",
