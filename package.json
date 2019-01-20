@@ -1,6 +1,6 @@
 {
   "name": "@author.io/element-base",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "description": "Base class for all author-* custom elements (web components).",
   "main": "dist/author-element.min.js",
   "scripts": {
@@ -14,7 +14,8 @@
     "test:es5:sauce": "TRAVIS_BUILD_NUMBER=1 && npm run build && karma start karma.conf-ci.js && standard --verbose | snazzy"
   },
   "files": [
-    "dist/*.js"
+    "dist/*.js",
+    "dist/*.js.map"
   ],
   "repository": {
     "type": "git",
