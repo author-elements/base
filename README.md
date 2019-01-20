@@ -26,8 +26,8 @@ You only need to choose one of these files. If you need to support Internet Expl
 ```html
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/@author.io/element-base/dist/author-element.min.js"></script>
-    <script src="https://domain.com/path/to/custom/author/element.js"></script>
+    <script src="https://cdn.author.io/element/base/author-element.min.js"></script>
+    <script src="https://cdn.author.io/element/whatever/element.min.js"></script>
   </head>
 </html>
 ```
