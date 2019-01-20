@@ -3,4 +3,7 @@ _*
 dist
 !.gitignore
 !.npmignore
+!.travis.yml
 node_modules
+env.json
+*.log
