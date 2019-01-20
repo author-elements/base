@@ -1,6 +1,6 @@
 {
   "name": "@author.io/element-base",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "Base class for all author-* custom elements (web components).",
   "main": "dist/author-element.min.js",
   "scripts": {
