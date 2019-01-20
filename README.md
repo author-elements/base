@@ -1,8 +1,8 @@
-# AuthorElement
+# AuthorElement [![Build Status](https://travis-ci.org/author-components/base.svg?branch=master&style=for-the-badge)](https://travis-ci.org/author-components/base)
 
 This is the base class used to build Author.io custom HTML elements (web components). It provides incredibly lightweight utilities and was designed for optimizing all `<author-*>` custom tags.
 
-[![Build Status](https://travis-ci.org/author-components/base.svg?branch=master&style=for-the-badge)](https://travis-ci.org/author-components/base) ![Source Size](https://img.shields.io/github/size/author-components/base/author-element.js.svg?colorB=%23333333&label=Source&logo=JavaScript&logoColor=%23aaaaaa&style=for-the-badge) ![Deliverable Size](https://img.shields.io/bundlephobia/minzip/@author.io/element-base.svg?colorB=%23333333&label=Minified-Gzipped&logo=JavaScript&style=for-the-badge) ![npm](https://img.shields.io/npm/v/@author.io/element-base.svg?colorB=%23333&label=%40author.io%2Felement-base&logo=npm&style=for-the-badge)
+![Source Size](https://img.shields.io/github/size/author-components/base/author-element.js.svg?colorB=%23333333&label=Source&logo=JavaScript&logoColor=%23aaaaaa&style=for-the-badge) ![Deliverable Size](https://img.shields.io/bundlephobia/minzip/@author.io/element-base.svg?colorB=%23333333&label=Minified-Gzipped&logo=JavaScript&style=for-the-badge) ![npm](https://img.shields.io/npm/v/@author.io/element-base.svg?colorB=%23333&label=%40author.io%2Felement-base&logo=npm&style=for-the-badge)
 
 [![Browser Status](https://saucelabs.com/browser-matrix/author.io.svg)](https://saucelabs.com/u/author.io)
 
