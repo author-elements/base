@@ -2,7 +2,11 @@
 
 This is the base class used to build Author.io custom HTML elements (web components). It provides incredibly lightweight utilities and was designed for optimizing all `<author-*>` custom tags.
 
+[![Build Status](https://travis-ci.org/author-components/base.svg?branch=master)](https://travis-ci.org/author-components/base)
+
 [![Sauce Test Status](https://saucelabs.com/browser-matrix/author.io.svg)](https://saucelabs.com/u/author.io)
+
+
 
 ## Usage
 
