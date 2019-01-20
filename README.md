@@ -10,6 +10,8 @@ This is the base class used to build Author.io custom HTML elements (web compone
 
 [![Deliverable Size](https://img.shields.io/bundlephobia/minzip/@author.io/element-base.svg?colorB=%23333333&label=Minified-Gzipped&logo=JavaScript&style=for-the-badge)]
 
+![](https://img.shields.io/npm/v/@author.io/element-base.svg?colorB=%23333&label=%40author.io%2Felement-base&logo=npm&style=for-the-badge)
+
 ## Usage
 
 This library must be included _once_ in HTML pages _before_ any `author-*` tags.
