@@ -4,9 +4,7 @@ This is the base class used to build Author.io custom HTML elements (web compone
 
 [![Build Status](https://travis-ci.org/author-components/base.svg?branch=master)](https://travis-ci.org/author-components/base)
 
-[![Sauce Test Status](https://saucelabs.com/browser-matrix/author.io.svg)](https://saucelabs.com/u/author.io)
-
-
+[![Browser Status](https://saucelabs.com/browser-matrix/author.io.svg)](https://saucelabs.com/u/author.io)
 
 ## Usage
 
