@@ -6,7 +6,9 @@ This is the base class used to build Author.io custom HTML elements (web compone
 
 [![Browser Status](https://saucelabs.com/browser-matrix/author.io.svg)](https://saucelabs.com/u/author.io)
 
-[![Size](https://img.shields.io/bundlephobia/minzip/@author.io/element-base.svg?colorB=%23333333&label=Gzipped&logo=JavaScript&style=for-the-badge)]
+![Source Size](https://img.shields.io/github/size/author-components/base/author-element.js.svg?colorB=%23333333&label=Source&logo=JavaScript&logoColor=%23aaaaaa&style=for-the-badge)
+
+[![Deliverable Size](https://img.shields.io/bundlephobia/minzip/@author.io/element-base.svg?colorB=%23333333&label=Minified-Gzipped&logo=JavaScript&style=for-the-badge)]
 
 ## Usage
 
