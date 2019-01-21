@@ -288,8 +288,9 @@ const AuthorElement = superClass => class extends superClass {
       },
 
       /**
-       * Accepted values: 'custom', 'dependency', 'readonly', 'reference', 'type'
-       * @typedef {ErrorType}
+       * @typedef {string} ErrorType (custom, dependency, readonly, reference, type)
+       * Indentifier for JavaScript built-in Error types including:
+       * Error, TypeError, ReferenceError, or custom Error
        */
 
       /**
@@ -370,10 +371,11 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
-      /**
-       * Accepted values: 'warning', 'error', 'info', 'log'
-       * @typedef {String} ConsoleLogType
-       */
+       /**
+        * @typedef {string} ConsoleLogType (warning, error, info, log)
+        * Indentifier for window.console built-in methods including:
+        * warn(), error(), info(), log()
+        */
 
       /**
        * @method printToConsole
