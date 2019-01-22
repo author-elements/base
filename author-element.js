@@ -59,17 +59,96 @@ const AuthorElement = superClass => class extends superClass {
         value: {}
       },
 
-      privateProperties: {
-        value: []
+      properties: {
+        value: {}
       },
 
-      readOnlyProperties: {
+      privateProperties: {
         value: []
       },
 
       listeners: {
         value: []
-      }
+      },
+
+      definePrivateProperty: {
+        value: (name, data) => {
+          this.PRIVATE.privateProperties[name] = null
+
+          Object.defineProperty(this.PRIVATE, name, {
+            get: () => this.PRIVATE.privateProperties[name] || data.default,
+            set: value => {
+              if (data.readonly) {
+                return this.throwError({
+                  type: 'readonly',
+                  vars: { prop: name }
+                })
+              }
+
+              this.PRIVATE.privateProperties[name] = value
+            }
+          })
+        }
+      },
+
+      defineReadOnlyProperty: {
+        value: (name, data) => {
+          let cfg = {
+            set: value => {
+              this.throwError({
+                type: 'readonly',
+                vars: { prop: name }
+              })
+            },
+
+            get: () => {
+              if (data.hasOwnProperty('get')) {
+                if (typeof data.get !== 'function') {
+                  return this.UTIL.throwError({
+                    type: 'type',
+                    message: 'Property getter must be a function'
+                  })
+                }
+
+                return data.get()
+              }
+
+              return data.default || null
+            }
+          }
+
+          Object.defineProperty(this, name, cfg)
+        }
+      },
+
+      getBooleanAttributeValue: {
+        value: attr => this.hasAttribute(attr) && this.getAttribute(attr) !== 'false'
+      },
+
+      setBooleanAttributeValue: {
+        value: (attr, value) => {
+          if (typeof value === 'boolean') {
+            value = value.toString()
+          }
+
+          let acceptableValues = ['true', 'false', '', null]
+
+          if (!acceptableValues.includes(value)) {
+            this.UTIL.printToConsole(`"${attr}" attribute expected boolean but received "${value}"`, 'error')
+            return this.removeAttribute(attr)
+          }
+
+          switch (value) {
+            case 'false':
+            case null:
+              return this.removeAttribute(attr)
+
+            case 'true':
+            case '':
+              return this.setAttribute(attr, '')
+          }
+        }
+      },
     })
 
     Object.defineProperties(this.UTIL, {
@@ -123,7 +202,7 @@ const AuthorElement = superClass => class extends superClass {
               }
 
               if (isBool) {
-                return this.UTIL.getBooleanAttributeValue(name)
+                return this.PRIVATE.getBooleanAttributeValue(name)
               }
 
               return this.hasAttribute(name) ? this.getAttribute(name) : defaultValue
@@ -137,7 +216,7 @@ const AuthorElement = superClass => class extends superClass {
               }
 
               if (isBool) {
-                return this.UTIL.setBooleanAttributeValue(name, value)
+                return this.PRIVATE.setBooleanAttributeValue(name, value)
               }
 
               this.setAttribute(name, value)
@@ -154,102 +233,77 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
-      definePrivateProperty: {
-        value: (prop, value) => {
-          this.PRIVATE.privateProperties.push(prop)
-
-          Object.defineProperty(this.PRIVATE, prop, {
-            writable: true,
-            value
-          })
-        }
-      },
-
-      definePrivateProperties: {
-        value: props => {
-          for (let prop in props) {
-            this.UTIL.definePrivateProperty(prop, props[prop])
-          }
-        }
-      },
-
-      defineReadOnlyProperty: {
-        value: prop => {
-          if (typeof prop === 'string') {
-            this.PRIVATE.readOnlyProperties.push(prop)
-
-            return Object.defineProperty(this, prop, { // eslint-disable-line accessor-pairs
-              set (value) {
-                this.throwError({
-                  type: 'readonly',
-                  vars: { prop }
-                })
-              }
-            })
+      defineProperty: {
+        value: (name, value) => {
+          if (typeof value !== 'object') {
+            this.PRIVATE.properties[name] = value
+            this[name] = value
+            return
           }
 
-          if (typeof prop !== 'object') {
-            return this.UTIL.throwError({
-              type: 'type',
-              message: `Read-only property must be type "object" or "string"`
-            })
+          let data = {
+            readonly: value.hasOwnProperty('readonly') && value.readonly === true,
+            private: value.hasOwnProperty('private') && value.private === true,
+            default: value.hasOwnProperty('default') ? value.default : null
           }
 
-          if (!prop.hasOwnProperty('name')) {
-            return this.UTIL.throwError({
-              type: 'reference',
-              message: `Read-only property definition object must must have a "name" property!`
-            })
-          }
-
-          this.PRIVATE.readOnlyProperties.push(prop.name)
-
-          Object.defineProperty(this, prop.name, {
-            set (value) {
-              this.UTIL.throwError({
-                type: 'readonly',
-                vars: {
-                  prop: prop.name
-                }
+          if (value.hasOwnProperty('get')) {
+            if (typeof value.get !== 'function') {
+              return this.UTIL.throwError({
+                type: 'type',
+                message: 'Property getter must be a function'
               })
-            },
-
-            get: prop.hasOwnProperty('get') ? prop.get : function () {
-              return this[prop]
             }
+
+            data.get = value.get
+          }
+
+          if (value.hasOwnProperty('set')) {
+            if (typeof value.set !== 'function') {
+              return this.UTIL.throwError({
+                type: 'type',
+                message: 'Property setter must be a function'
+              })
+            }
+
+            data.set = value.set
+          }
+
+          if (value.private) {
+            return this.PRIVATE.definePrivateProperty(name, data)
+          }
+
+          if (value.readonly) {
+            return this.PRIVATE.defineReadOnlyProperty(name, data)
+          }
+
+          this.PRIVATE.properties[name] = data.default
+
+          Object.defineProperty(this, name, {
+            get: () => this.PRIVATE.properties[name],
+            set: value => this.PRIVATE.properties[name] = value
           })
         }
       },
 
-      defineReadOnlyProperties: {
-        value: props => props.forEach(prop => this.UTIL.defineReadOnlyProperty(prop))
+      defineProperties: {
+        value: properties => {
+          for (let property in properties) {
+            this.UTIL.defineProperty(property, properties[property])
+          }
+        }
       },
 
-      getBooleanAttributeValue: {
-        value: attr => this.hasAttribute(attr) && this.getAttribute(attr) !== 'false'
-      },
+      definePrivateMethods: {
+        value: methods => {
+          for (let method in methods) {
+            if (this.PRIVATE.hasOwnProperty(method)) {
+              return this.UTIL.throwError({
+                message: `Cannot create private method. Property name "${method}" is already in use.`
+              })
+            }
 
-      setBooleanAttributeValue: {
-        value: (attr, value) => {
-          if (typeof value === 'boolean') {
-            value = value.toString()
-          }
-
-          let acceptableValues = ['true', 'false', '', null]
-
-          if (!acceptableValues.includes(value)) {
-            this.UTIL.printToConsole(`"${attr}" attribute expected boolean but received "${value}"`, 'error')
-            return this.removeAttribute(attr)
-          }
-
-          switch (value) {
-            case 'false':
-            case null:
-              return this.removeAttribute(attr)
-
-            case 'true':
-            case '':
-              return this.setAttribute(attr, '')
+            this.PRIVATE[method] = methods[method]
           }
         }
       },
@@ -342,24 +396,24 @@ const AuthorElement = superClass => class extends superClass {
                 finalMessage += ` ${vars.url}`
               }
             }
-          }
 
-          if (type === 'readonly') {
+          } else if (type === 'readonly') {
             finalMessage += `Cannot set read-only property`
 
-            if (vars) {
-              if (vars.hasOwnProperty('prop')) {
-                finalMessage += ` "${vars.prop}"`
-              }
+            if (vars && vars.hasOwnProperty('prop')) {
+              finalMessage += ` "${vars.prop}"`
             }
-          }
 
-          if (type === 'reference') {
+          } else if (type === 'reference') {
             error = new ReferenceError()
-          }
 
-          if (type === 'type') {
+          } else if (type === 'type') {
             error = new TypeError()
+
+          } else {
+            return this.UTIL.throwError({
+              message: `Unrecognized error type "${type}". Accepted types: "custom", "dependency", "readonly", "reference", "type"`
+            })
           }
 
           if (properties.hasOwnProperty('message')) {
@@ -436,12 +490,8 @@ const AuthorElement = superClass => class extends superClass {
         value: (element, evtName, callback) => {
           let listener = {
             id: `listener_${this.UTIL.generateGuid()}`,
-            apply: () => {
-              element.addEventListener(evtName, callback)
-            },
-            remove: () => {
-              element.removeEventListener(evtName, callback)
-            }
+            apply: () => element.addEventListener(evtName, callback),
+            remove: () => element.removeEventListener(evtName, callback)
           }
 
           this.PRIVATE.listeners.push(listener)
@@ -460,13 +510,21 @@ const AuthorElement = superClass => class extends superClass {
        */
       registerListeners: {
         value: (element, listeners) => {
-          listeners.forEach(listener => this.UTIL.registerListener(element, listener.name, listener.callback))
+          for (let listener in listeners) {
+            this.UTIL.registerListener(element, listener, listeners[listener])
+          }
         }
       }
     })
   }
 
   attributeChangedCallback (attribute, oldValue, newValue) {
+    this.emit('attribute.change', {
+      attribute,
+      oldValue,
+      newValue
+    })
+
     let { attributes, booleanAttributes } = this.PRIVATE
 
     if (attributes.hasOwnProperty(attribute)) {
@@ -482,12 +540,6 @@ const AuthorElement = superClass => class extends superClass {
         this.PRIVATE.booleanAttributes[attribute] = newValue
       }
     }
-
-    this.emit('attribute.change', {
-      attribute,
-      oldValue,
-      newValue
-    })
   }
 
   /**
@@ -537,14 +589,20 @@ const AuthorElement = superClass => class extends superClass {
     this.dispatchEvent(event)
   }
 
+  off (evtName, handler) {
+    this.removeEventListener(evtName, handler)
+  }
+
   /**
    * @method on
    * Convenience method. Attaches an event listener to the element.
    * @param  {String}   evtName
-   * @param  {Function} callback
+   * @param  {Function} handler
    * Called when the event is fired.
    */
-  on (evtName, callback) {
-    this.addEventListener(evtName, callback)
+  on (evtName, handler) {
+    this.addEventListener(evtName, handler)
   }
 }
+
+export default AuthorElement
