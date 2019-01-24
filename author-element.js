@@ -76,7 +76,14 @@ const AuthorElement = superClass => class extends superClass {
           this.PRIVATE.privateProperties[name] = null
 
           Object.defineProperty(this.PRIVATE, name, {
-            get: () => this.PRIVATE.privateProperties[name] || data.default,
+            get: () => {
+              if (this.PRIVATE.privateProperties[name] === null) {
+                return data.default
+              }
+
+              return this.PRIVATE.privateProperties[name]
+            },
+
             set: value => {
               if (data.readonly) {
                 return this.throwError({
@@ -113,7 +120,7 @@ const AuthorElement = superClass => class extends superClass {
                 return data.get()
               }
 
-              return data.default || null
+              return data.hasOwnProperty('default') ? data.default : null
             }
           }
 
@@ -177,7 +184,7 @@ const AuthorElement = superClass => class extends superClass {
               customSetter = cfg.set
             }
 
-            defaultValue = cfg.default || null
+            defaultValue = cfg.hasOwnProperty('default') ? cfg.default : null
           }
 
           let isBool = typeof defaultValue === 'boolean'
@@ -186,7 +193,8 @@ const AuthorElement = superClass => class extends superClass {
           Object.defineProperty(this.PRIVATE[privateKey], name, {
             get: () => {
               if (customGetter) {
-                return customGetter() || defaultValue
+                let result = customGetter()
+                return result === null ? defaultValue : result
               }
 
               return defaultValue
@@ -198,7 +206,8 @@ const AuthorElement = superClass => class extends superClass {
           Object.defineProperty(this, name, {
             get: () => {
               if (customGetter) {
-                return customGetter() || defaultValue
+                let result = customGetter()
+                return result === null ? defaultValue : result
               }
 
               if (isBool) {
@@ -380,9 +389,9 @@ const AuthorElement = superClass => class extends superClass {
         value: properties => {
           let finalMessage = `<${this.localName}> `
 
-          let type = properties.type || 'custom'
+          let type = properties.hasOwnProperty('type') ? properties.type : 'custom'
           let error = new Error()
-          let { vars } = properties || null
+          let { vars } = properties
 
           if (type === 'dependency') {
             finalMessage += 'Missing dependency'
