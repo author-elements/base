@@ -7,7 +7,6 @@ const AuthorElement = superClass => class extends superClass {
        * @property PRIVATE
        * Storage Object for private methods and properties. Used internally.
        * @type {object}
-       * @private
        */
       PRIVATE: {
         value: {}
@@ -17,7 +16,6 @@ const AuthorElement = superClass => class extends superClass {
        * @property UTIL
        * Storage Object for utility methods and properties.
        * @type {object}
-       * @private
        */
       UTIL: {
         value: {}
