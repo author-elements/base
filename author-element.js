@@ -2,37 +2,11 @@ const AuthorElement = superClass => class extends superClass {
   constructor (templateString) {
     super()
 
-    this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : ('keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode')
-
-    this.attachShadow({ mode: 'open' })
-
-    let container = document.createElement('div')
-    container.insertAdjacentHTML('afterbegin', templateString)
-
-    let template = container.querySelector('template')
-
-    if ('content' in template) {
-      this.shadowRoot.appendChild(template.content.cloneNode(true))
-    } else {
-      template.childNodes.forEach((child) => {
-        this.shadowRoot.appendChild(child.cloneNode(true))
-      })
-    }
-
-    template = null
-    this.crypto = null
-
-    try {
-      this.crypto = crypto
-    } catch (e) {
-      this.crypto = msCrypto
-    }
-
     Object.defineProperties(this, {
       /**
        * @property PRIVATE
        * Storage Object for private methods and properties. Used internally.
-       * @type {Object}
+       * @type {object}
        * @private
        */
       PRIVATE: {
@@ -42,7 +16,7 @@ const AuthorElement = superClass => class extends superClass {
       /**
        * @property UTIL
        * Storage Object for utility methods and properties.
-       * @type {Object}
+       * @type {object}
        * @private
        */
       UTIL: {
@@ -51,26 +25,93 @@ const AuthorElement = superClass => class extends superClass {
     })
 
     Object.defineProperties(this.PRIVATE, {
+      /**
+       * @property attributes
+       * Used internally to manage registered attributes.
+       * @private
+       */
       attributes: {
         value: {}
       },
 
+      /**
+       * @property booleanAttributes
+       * Used internally to manage registered boolean attributes.
+       * @private
+       */
       booleanAttributes: {
         value: {}
       },
 
+      /**
+       * @property properties
+       * Used internally to manage registered properties.
+       * @private
+       */
       properties: {
         value: {}
       },
 
+      /**
+       * @property privateProperties
+       * Used internally to manage registered private properties.
+       * @private
+       */
       privateProperties: {
         value: []
       },
 
+      /**
+       * @property listeners
+       * Used internally to manage registered event listeners.
+       * @private
+       */
       listeners: {
         value: []
       },
 
+      /**
+       * @property initialize
+       * Used internally to set up the element's Shadow Root and inject its template.
+       * @private
+       */
+      initialize: {
+        value: templateString => {
+          this.keySource = 'key' in KeyboardEvent.prototype ? 'key' : ('keyIdentifier' in KeyboardEvent.prototype ? 'keyIdentifier' : 'keyCode')
+
+          this.attachShadow({ mode: 'open' })
+
+          let container = document.createElement('div')
+          container.insertAdjacentHTML('afterbegin', templateString)
+
+          let template = container.querySelector('template')
+
+          if ('content' in template) {
+            this.shadowRoot.appendChild(template.content.cloneNode(true))
+          } else {
+            template.childNodes.forEach((child) => {
+              this.shadowRoot.appendChild(child.cloneNode(true))
+            })
+          }
+
+          template = null
+          this.crypto = null
+
+          try {
+            this.crypto = crypto
+          } catch (e) {
+            this.crypto = msCrypto
+          }
+        }
+      },
+
+      /**
+       * @method definePrivateProperty
+       * Used internally to register new private properties on the element
+       * @param  {string} name
+       * @param  {CustomPropertyObject} data
+       * @private
+       */
       definePrivateProperty: {
         value: (name, data) => {
           this.PRIVATE.privateProperties[name] = null
@@ -98,6 +139,13 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      /**
+       * @method defineReadOnlyProperty
+       * Used internally to register new readonly properties on the element.
+       * @param  {string} name
+       * @param  {CustomPropertyObject} data
+       * @private
+       */
       defineReadOnlyProperty: {
         value: (name, data) => {
           let cfg = {
@@ -128,12 +176,27 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      /**
+       * @method getBooleanAttributeValue
+       * Used internally. Returns a validated boolean attribute value.
+       * @param  {string} name
+       * @return {boolean}
+       * @private
+       */
       getBooleanAttributeValue: {
-        value: attr => this.hasAttribute(attr) && this.getAttribute(attr) !== 'false'
+        value: name => this.hasAttribute(name) && this.getAttribute(name) !== 'false'
       },
 
+      /**
+       * @method setBooleanAttributeValue
+       * Used internally. Ensures that a boolean attribute recieves a valid
+       * boolean as a value.
+       * @param  {string} name
+       * @param  {any} value
+       * @private
+       */
       setBooleanAttributeValue: {
-        value: (attr, value) => {
+        value: (name, value) => {
           if (typeof value === 'boolean') {
             value = value.toString()
           }
@@ -141,18 +204,18 @@ const AuthorElement = superClass => class extends superClass {
           let acceptableValues = ['true', 'false', '', null]
 
           if (!acceptableValues.includes(value)) {
-            this.UTIL.printToConsole(`"${attr}" attribute expected boolean but received "${value}"`, 'error')
-            return this.removeAttribute(attr)
+            this.UTIL.printToConsole(`"${name}" attribute expected boolean but received "${value}"`, 'error')
+            return this.removeAttribute(name)
           }
 
           switch (value) {
             case 'false':
             case null:
-              return this.removeAttribute(attr)
+              return this.removeAttribute(name)
 
             case 'true':
             case '':
-              return this.setAttribute(attr, '')
+              return this.setAttribute(name, '')
           }
         }
       },
@@ -168,6 +231,24 @@ const AuthorElement = superClass => class extends superClass {
         value: null
       },
 
+      /**
+       * @typedef {object} CustomAttributeObject shape: {
+       *   get: {function} Custom getter
+       *   set: {function} Custom setter
+       *   default: {any} Default value
+       * }
+       */
+
+      /**
+       * @method defineAttribute
+       * Registers a new attribute on the element and connects it to a new
+       * property of the same name.
+       * @param  {string} name
+       * @param  {string|number|boolean|CustomAttributeObject} defaultValue
+       * If a default value is passed, or if a CustomAttributeObject is passed
+       * which includes a "default" property, getters will be applied that
+       * return the default value if the actual value is null or undefined.
+       */
       defineAttribute: {
         value: (name, defaultValue) => {
           let customGetter = null
@@ -234,6 +315,22 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      /**
+       * @method defineAttributes
+       * Define multiple attributes at once.
+       * @param  {object} attrs
+       * Example:
+       * {
+       *   booleanAttr: false,
+       *   stringAttr: 'string',
+       *   customAttr: {
+       *     get: () => this.customAttribute,
+       *     default: 'defaultValue'
+       *   }
+       * }
+       *
+       * Custom attributes are configured as CustomAttributeObject
+       */
       defineAttributes: {
         value: attrs => {
           for (let attr in attrs) {
@@ -242,6 +339,23 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      /**
+       * @typedef {object} CustomPropertyObject shape: {
+       *   readonly: {boolean} optional
+       *   private: {boolean} optional,
+       *   default: {any} Default property value,
+       *   get: {function} Custom Getter,
+       *   set: {function} Custom setter
+       * }
+       */
+
+      /**
+       * @method defineProperty
+       * Registers a custom property on the element. If an attribute of the same
+       * name already exists, its paired property will be overwritten.
+       * @param  {string} name
+       * @param  {string|boolean|number|CustomPropertyObject} value
+       */
       defineProperty: {
         value: (name, value) => {
           if (typeof value !== 'object') {
@@ -295,6 +409,24 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      /**
+       * @method defineProperties
+       * Register multiple properties at once on the element.
+       * @param  {object} properties
+       * Example: {
+       *   booleanProperty: false,
+       *   stringProperty: 'string',
+       *   customProperty: {
+       *     readonly: true,
+       *     private: true,
+       *     get: () => {
+       *       doSomething()
+       *       return this.customProperty
+       *     },
+       *     default: 'default value'
+       *   }
+       * }
+       */
       defineProperties: {
         value: properties => {
           for (let property in properties) {
@@ -303,6 +435,15 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      /**
+       * @method definePrivateMethods
+       * Register multiple private methods on the element. These will be added
+       * tp the element's "PRIVATE" object and can be accessed via this.PRIVATE.*
+       * @param  {object} methods
+       * Example {
+       *   myPrivateMethod: () => doSomething()
+       * }
+       */
       definePrivateMethods: {
         value: methods => {
           for (let method in methods) {
@@ -317,6 +458,15 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      /**
+       * @method createEvent
+       * Returns a new CustomEvent object.
+       * @param  {[type]} name
+       * Name of the event
+       * @param  {object} detail
+       * Properties to add to event.detail
+       * @return {CustomEvent}
+       */
       createEvent: {
         value: (name, detail) => {
           return new CustomEvent(name, { detail })
@@ -325,11 +475,11 @@ const AuthorElement = superClass => class extends superClass {
 
       /**
        * @method generateGuid
-       * @param  {String} [prefix=null]
+       * @param  {string} [prefix=null]
        * String to prepend to the beginning of the id.
-       * @param  {String} [postfix=null]
+       * @param  {string} [postfix=null]
        * String to append to the end of the id.
-       * @return {String}
+       * @return {string}
        * New RFC-compliant GUID
        */
       generateGuid: {
@@ -359,18 +509,18 @@ const AuthorElement = superClass => class extends superClass {
       /**
        * @method throwError
        * Throws a customizable new Error.
-       * @param {Object} properties
+       * @param {object} properties
        * @property {ErrorType} type
        * Type of error to throw. For example, 'reference' will throw a
        * new ReferenceError() instance, while 'type' will throw a new TypeError()
        * instance. Other values will throw customizable new Error() instances.
-       * @property {Object} vars
+       * @property {object} vars
        * Some error types have default messages which accept interpolated variables.
        * For example, 'dependency' errors accept an options 'name' variable, the
        * value of which should be the name of the missing dependency. They also
        * accept a 'url' variable, the value of which should be a url where the
        * dependency can be acquired.
-       * @property {String} message
+       * @property {string} message
        * A custom message to append to the default error message.
        *
        * Example usage:
@@ -444,7 +594,7 @@ const AuthorElement = superClass => class extends superClass {
        * @method printToConsole
        * Prints a message to the console, along with the tag-name of the element.
        * Can print customizable warnings, errors, info, or default logs.
-       * @param {String} message
+       * @param {string} message
        * Message to print.
        * @param {ConsoleLogType} [type = 'log']
        * Type of message to print to the console. This will determine which
@@ -466,7 +616,7 @@ const AuthorElement = superClass => class extends superClass {
       /**
        * @method monitorChildren
        * Applies a MutationObserver to the element.
-       * @param {Function} callback
+       * @param {function} callback
        * Runs when a mutation occurs
        * @param {Boolean} [subtree = false]
        * Determines whether or not to observe changes to the descendants of the target node
@@ -490,9 +640,9 @@ const AuthorElement = superClass => class extends superClass {
        * upon element disconnect.
        * @param {DOMNode} element
        * Element to which to apply the event listener.
-       * @param {String} evtName
+       * @param {string} evtName
        * Name of the event to listen to.
-       * @param {Function} callback
+       * @param {function} callback
        * Function to call upon firing of the event.
        */
       registerListener: {
@@ -525,8 +675,22 @@ const AuthorElement = superClass => class extends superClass {
         }
       }
     })
+
+    this.PRIVATE.initialize(templateString)
   }
 
+  /**
+   * @override
+   * @method attributeChangedCallback
+   * Synchronizes attribute/property updates.
+   * @param  {string} attribute
+   * @param  {string} oldValue
+   * @param  {string} newValue
+   * @fires attribute.change
+   * Fires before change is applied to matching properties.
+   * @fires attribute.changed
+   * Fires after change has been applied to matching properties.
+   */
   attributeChangedCallback (attribute, oldValue, newValue) {
     this.emit('attribute.change', {
       attribute,
@@ -536,19 +700,17 @@ const AuthorElement = superClass => class extends superClass {
 
     let { attributes, booleanAttributes } = this.PRIVATE
 
-    if (attributes.hasOwnProperty(attribute)) {
-      if (attributes[attribute] !== newValue) {
-        this.PRIVATE.attributes[attribute] = newValue
-      }
-
-      return
+    if (attributes.hasOwnProperty(attribute) && attributes[attribute] !== newValue) {
+      this.PRIVATE.attributes[attribute] = newValue
+    } else if (booleanAttributes.hasOwnProperty(attribute) && newValue !== 'true' && newValue !== '') {
+      this.PRIVATE.booleanAttributes[attribute] = newValue
     }
 
-    if (booleanAttributes.hasOwnProperty(attribute)) {
-      if (newValue !== 'true' && newValue !== '') {
-        this.PRIVATE.booleanAttributes[attribute] = newValue
-      }
-    }
+    this.emit('attribute.changed', {
+      attribute,
+      oldValue,
+      newValue
+    })
   }
 
   /**
@@ -562,9 +724,7 @@ const AuthorElement = superClass => class extends superClass {
   connectedCallback () {
     this.emit('connected')
 
-    setTimeout(() => {
-      this.emit('rendered')
-    }, 0)
+    setTimeout(() => this.emit('rendered'), 0)
   }
 
   /**
@@ -581,11 +741,11 @@ const AuthorElement = superClass => class extends superClass {
   /**
    * @method emit
    * Dispatches a new CustomEvent()
-   * @param  {String} name
+   * @param  {string} name
    * Name of event to dispatch
-   * @param  {Object} detail
+   * @param  {object} detail
    * Data object to include in the event's payload
-   * @param  {DOMNode} [target=null]
+   * @param  {HTMLElement} [target=null]
    * DOM node to fire the event at.
    */
   emit (name, detail, target = null) {
@@ -598,6 +758,12 @@ const AuthorElement = superClass => class extends superClass {
     this.dispatchEvent(event)
   }
 
+  /**
+   * @method off
+   * Convenience method. Removes an event listener from the element.
+   * @param  {string}   evtName
+   * @param  {function} handler
+   */
   off (evtName, handler) {
     this.removeEventListener(evtName, handler)
   }
@@ -605,8 +771,8 @@ const AuthorElement = superClass => class extends superClass {
   /**
    * @method on
    * Convenience method. Attaches an event listener to the element.
-   * @param  {String}   evtName
-   * @param  {Function} handler
+   * @param  {string}   evtName
+   * @param  {function} handler
    * Called when the event is fired.
    */
   on (evtName, handler) {
