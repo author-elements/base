@@ -22,3 +22,9 @@ deploy:
     on:
       tags: true
       branch: master
+notifications:
+  slack:
+    rooms:
+      - authorio:$SLACK_KEY#oss
+    on_success: change
+    on_failure: always
