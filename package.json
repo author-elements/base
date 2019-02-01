@@ -9,8 +9,11 @@
     "deploy": "npm run build && npm publish --access public",
     "test": "npm run build && karma start karma.conf.es6.js && karma start karma.conf.es6-modules.js && karma start karma.conf.es5.js && standard --verbose | snazzy",
     "test:es5": "npm run build && karma start karma.conf.es5.js && standard --verbose | snazzy",
+    "test:es5:local": "npm run build && karma start karma.conf.es5.js --local && standard --verbose | snazzy",
     "test:es6": "npm run build && karma start karma.conf.es6.js && standard --verbose | snazzy",
+    "test:es6:local": "npm run build && karma start karma.conf.es6.js --local && standard --verbose | snazzy",
     "test:es6-modules": "npm run build && karma start karma.conf.es6-modules.js && standard --verbose | snazzy",
+    "test:es6-modules:local": "npm run build && karma start karma.conf.es6-modules.js --local && standard --verbose | snazzy",
     "test:es5:sauce": "TRAVIS_BUILD_NUMBER=1 && npm run build && karma start karma.conf-ci.js && standard --verbose | snazzy"
   },
   "files": [
@@ -50,23 +53,9 @@
   },
   "homepage": "https://github.com/author-components/base#readme",
   "devDependencies": {
-    "browserify": "^16.2.3",
-    "browserslist": "^4.4.1",
-    "chalk": "^2.4.2",
+    "@author.io/karma-customelements": "^1.0.10",
     "fs-extra": "^7.0.1",
     "karma": "^3.1.4",
-    "karma-browserify": "^6.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-edge-launcher": "^0.4.2",
-    "karma-firefox-launcher": "^1.1.0",
-    "karma-html2js-preprocessor": "^1.1.0",
-    "karma-ie-launcher": "^1.0.0",
-    "karma-safari-launcher": "^1.0.0",
-    "karma-sauce-launcher": "^2.0.2",
-    "karma-spec-reporter": "0.0.32",
-    "karma-tap": "^4.1.4",
-    "karma-tap-pretty-reporter": "^4.1.0",
-    "localenvironment": "^1.0.2",
     "rollup": "^1.1.0",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-terser": "^4.0.2",
@@ -74,9 +63,7 @@
     "rollupify": "^0.5.1",
     "snazzy": "^8.0.0",
     "standard": "^12.0.1",
-    "table": "^5.2.1",
     "tap": "^12.1.1",
-    "tap-diff": "^0.1.1",
     "tape": "^4.9.2"
   },
   "standard": {
@@ -85,10 +72,8 @@
       "_**/*",
       "test/lib/**/*",
       "node_modules",
-      "dist/**/*",
-      "rollup*.js",
-      "karma.conf.js",
-      "build.js"
+      "dist",
+      "rollup*.js"
     ],
     "globals": [
       "customElements",

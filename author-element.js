@@ -216,7 +216,7 @@ const AuthorElement = superClass => class extends superClass {
               return this.setAttribute(name, '')
           }
         }
-      },
+      }
     })
 
     Object.defineProperties(this.UTIL, {
@@ -402,7 +402,7 @@ const AuthorElement = superClass => class extends superClass {
 
           Object.defineProperty(this, name, {
             get: () => this.PRIVATE.properties[name],
-            set: value => this.PRIVATE.properties[name] = value
+            set: value => { this.PRIVATE.properties[name] = value }
           })
         }
       },
@@ -553,20 +553,16 @@ const AuthorElement = superClass => class extends superClass {
                 finalMessage += ` ${vars.url}`
               }
             }
-
           } else if (type === 'readonly') {
             finalMessage += `Cannot set read-only property`
 
             if (vars && vars.hasOwnProperty('prop')) {
               finalMessage += ` "${vars.prop}"`
             }
-
           } else if (type === 'reference') {
             error = new ReferenceError()
-
           } else if (type === 'type') {
             error = new TypeError()
-
           } else {
             return this.UTIL.throwError({
               message: `Unrecognized error type "${type}". Accepted types: "custom", "dependency", "readonly", "reference", "type"`
@@ -582,11 +578,11 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
-       /**
-        * @typedef {string} ConsoleLogType (warning, error, info, log)
-        * Indentifier for window.console built-in methods including:
-        * warn(), error(), info(), log()
-        */
+      /**
+       * @typedef {string} ConsoleLogType (warning, error, info, log)
+       * Indentifier for window.console built-in methods including:
+       * warn(), error(), info(), log()
+       */
 
       /**
        * @method printToConsole

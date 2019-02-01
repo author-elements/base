@@ -1,11 +1,3 @@
-const base = require('./karma.base')('test/es5')
-const files = base.getFiles('./dist/author-element.es5.js')
+const customize = require('@author.io/karma-customelements')('test/es5', './dist/author-element.es5.js')
 
-base.displayFiles(files)
-
-module.exports = function (config) {
-  config.set(Object.assign(base.configuration, {
-    files,
-    logLevel: config.LOG_INFO
-  }))
-}
+module.exports = config => customize(config)
