@@ -109,5 +109,8 @@
       "NodeFilter"
     ]
   },
-  "dependencies": {}
+  "dependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
 }

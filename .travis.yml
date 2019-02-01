@@ -1,15 +1,24 @@
 language: node_js
 node_js:
-  - 11.6.0
-
+- 11.6.0
 script:
-  - npm test
-
+- npm test
+before_deploy: "npm run build"
 deploy:
-  provider: npm
-  email: "systems@author.io"
-  api_key:
-    secure: $NPM_API_KEY
-
-before_script:
-  - echo $NPM_API_KEY
+  - provider: npm
+    email: systems@author.io
+    api_key: $NPM_API_KEY
+    skip_cleanup: true
+    on:
+      tags: true
+      branch: master
+      tag: latest
+  - provider: releases
+    api_key: $GITHUB_API_KEY
+    skip_cleanup: true
+    overwrite: true
+    file_glob: true
+    files: dist/**/*
+    on:
+      tags: true
+      branch: master
