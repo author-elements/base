@@ -1,8 +1,7 @@
 // Karma configuration
 require('localenvironment')
 var path = require('path')
-
-var CI = true//process.env.hasOwnProperty('TRAVIS_BUILD_NUMBER ')
+var CI = process.env.hasOwnProperty('TRAVIS_BUILD_NUMBER ')
 var pkg = require('./package.json')
 var browserslist = require('browserslist')
 
@@ -86,8 +85,6 @@ browsers['SL_MicrosoftEdge'] = {
 
 var chalk = require('chalk')
 var tablemaker = require('table').table
-
-// console.log(JSON.stringify(browsers, null, 2))
 var displayBrowserList = BrowserList => {
   var rows = [[chalk.bold('Browser'), chalk.bold('Version')]]
   Object.keys(BrowserList).sort().forEach(slbrowser => {
@@ -103,7 +100,7 @@ var displayBrowserList = BrowserList => {
   }))
 }
 
-let modernBrowsersOnly = false
+var modernBrowsersOnly = false
 
 module.exports = (root) => {
   let preprocessors = () => {

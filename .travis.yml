@@ -4,3 +4,12 @@ node_js:
 
 script:
   - npm test
+
+deploy:
+  provider: npm
+  email: "systems@author.io"
+  api_key:
+    secure: $NPM_API_KEY
+
+before_script:
+  - echo $NPM_API_KEY
