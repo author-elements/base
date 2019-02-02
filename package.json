@@ -7,14 +7,15 @@
     "build": "npm run clean && rollup -c ./rollup.release.config.js",
     "clean": "node clean.js",
     "deploy": "npm run build && npm publish --access public",
-    "test": "npm run build && karma start karma.conf.es6.js && karma start karma.conf.es6-modules.js && karma start karma.conf.es5.js && standard --verbose | snazzy",
-    "test:es5": "npm run build && karma start karma.conf.es5.js && standard --verbose | snazzy",
-    "test:es5:local": "npm run build && karma start karma.conf.es5.js --local && standard --verbose | snazzy",
-    "test:es6": "npm run build && karma start karma.conf.es6.js && standard --verbose | snazzy",
-    "test:es6:local": "npm run build && karma start karma.conf.es6.js --local && standard --verbose | snazzy",
-    "test:es6-modules": "npm run build && karma start karma.conf.es6-modules.js && standard --verbose | snazzy",
-    "test:es6-modules:local": "npm run build && karma start karma.conf.es6-modules.js --local && standard --verbose | snazzy",
-    "test:es5:sauce": "TRAVIS_BUILD_NUMBER=1 && npm run build && karma start karma.conf-ci.js && standard --verbose | snazzy"
+    "test": "npm run build && karma start karma.conf.es6.js && karma start karma.conf.es6-modules.js && karma start karma.conf.es5.js && npm run test:syntax",
+    "test:syntax": "standard --verbose | snazzy",
+    "test:es5": "npm run build && karma start karma.conf.es5.js",
+    "test:es5:local": "npm run build && karma start karma.conf.es5.js --local && npm run test:syntax",
+    "test:es6": "npm run build && karma start karma.conf.es6.js",
+    "test:es6:local": "npm run build && karma start karma.conf.es6.js --local && npm run test:syntax",
+    "test:es6-modules": "npm run build && karma start karma.conf.es6-modules.js",
+    "test:es6-modules:local": "npm run build && karma start karma.conf.es6-modules.js --local && npm run test:syntax",
+    "test:es5:sauce": "TRAVIS_BUILD_NUMBER=1 && npm run build && karma start karma.conf.es5.js"
   },
   "files": [
     "dist/*.js",
