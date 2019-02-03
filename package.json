@@ -95,7 +95,11 @@
       "NodeFilter"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@author.io/karma-base": "^1.1.2",
+    "karma-browserstack-launcher": "^1.4.0",
+    "leaked-handles": "^5.2.0"
+  },
   "publishConfig": {
     "access": "public"
   }
