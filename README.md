@@ -4,7 +4,7 @@ This is the base class used to build Author.io custom HTML elements (web compone
 
 ![Source Size](https://img.shields.io/github/size/author-components/base/author-element.js.svg?colorB=%23333333&label=Source&logo=JavaScript&logoColor=%23aaaaaa&style=for-the-badge) ![Deliverable Size](https://img.shields.io/bundlephobia/minzip/@author.io/element-base.svg?colorB=%23333333&label=Minified-Gzipped&logo=JavaScript&style=for-the-badge) ![npm](https://img.shields.io/npm/v/@author.io/element-base.svg?colorB=%23333&label=%40author.io%2Felement-base&logo=npm&style=for-the-badge)
 
-[![BrowserStack](https://3fxtqy18kygf3on3bu39kh93-wpengine.netdna-ssl.com/wp-content/themes/browserstack/img/header-logo.svg)](https://browserstack.com)
+<a href="https://browserstack.com"><img src="https://github.com/author-components/base/raw/master/browserstack.png" style="max-height: 50px;"/></a>
 
 ## Usage
 
