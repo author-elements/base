@@ -3,6 +3,8 @@ node_js:
 - 11.6.0
 script:
 - npm run test:es5
+- npm run test:es6
+- npm run test:es6-modules
 before_deploy: "npm run build"
 deploy:
   - provider: npm
