@@ -4,6 +4,7 @@ module.exports = config => {
   config.set(Object.assign(customize(config, true, false), {
     browserify: {
       transform: [ 'rollupify' ]
-    }
+    },
+    concurrency: 1
   }))
 }
