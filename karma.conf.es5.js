@@ -2,7 +2,6 @@ const customize = require('@author.io/karma-customelements')('test/es5', './dist
 
 module.exports = config => {
   config.set(Object.assign(customize(config), {
-    concurrency: 1,
-    logLevel: config.LOG_DEBUG
+    concurrency: 3
   }))
 }
