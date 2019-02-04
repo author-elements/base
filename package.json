@@ -56,7 +56,6 @@
   "devDependencies": {
     "@author.io/karma-customelements": "^1.1.4",
     "fs-extra": "^7.0.1",
-    "karma": "^3.1.4",
     "rollup": "^1.1.0",
     "rollup-plugin-buble": "^0.19.6",
     "rollup-plugin-terser": "^4.0.2",
@@ -97,6 +96,7 @@
   },
   "dependencies": {
     "@author.io/karma-base": "^1.1.2",
+    "karma": "^4.0.0",
     "karma-browserstack-launcher": "^1.4.0",
     "leaked-handles": "^5.2.0",
     "tape-catch": "^1.0.6"
