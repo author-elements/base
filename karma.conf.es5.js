@@ -8,7 +8,7 @@ let customize = require('@author.io/karma-customelements')('test/es5', './dist/a
 
 require('leaked-handles').set({
   // fullStack: true, // use full stack traces
-  timeout: 25000 // run every 30 seconds instead of 5.
+  timeout: 45000 // run every 30 seconds instead of 5.
   // debugSockets: true
 })
 
