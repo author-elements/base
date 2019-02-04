@@ -15,7 +15,18 @@ require('leaked-handles').set({
 // const path = require('path')
 // let customize = require('@author.io/karma-customelements')('SauceLabs')
 module.exports = config => {
-  config.set(Object.assign(customize(config), {
+  let cfg = customize(config)
+
+  cfg.browsers = cfg.browsers.filter(b => b.toLowerCase().indexOf('chrome') < 0 && b.toLowerCase().indexOf('safari') < 0)
+
+  // Object.keys(cfg.customLaunchers).forEach(b => {
+  //   if (b.toLowerCase().indexOf('firefox') >= 0) {
+  //     cfg.customLaunchers[b].platform = 'linux'
+  //   }
+  // })
+
+  config.set(Object.assign(cfg, {
+    reporters: ['spec'],
     concurrency: 1
   }))
 }
