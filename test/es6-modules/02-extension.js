@@ -1,6 +1,6 @@
 import AuthorElement from '../../author-element.js'
 
-const test = require('tape')
+const test = require('tape').test
 
 test('Extend Class', t => {
   class DummyElement extends AuthorElement(HTMLElement) {
