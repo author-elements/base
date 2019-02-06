@@ -16,6 +16,7 @@ let customize = require('@author.io/karma-customelements')('test/es5', './dist/a
 // let customize = require('@author.io/karma-customelements')('SauceLabs')
 module.exports = config => {
   config.set(Object.assign(customize(config), {
+    captureTimeout: 0,
     concurrency: 1
   }))
 }
