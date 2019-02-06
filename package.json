@@ -54,7 +54,7 @@
   },
   "homepage": "https://github.com/author-components/base#readme",
   "devDependencies": {
-    "@author.io/karma-customelements": "^1.1.5",
+    "@author.io/karma-customelements": "^1.1.8",
     "fs-extra": "^7.0.1",
     "karma": "^4.0.0",
     "rollup": "^1.1.0",
@@ -95,12 +95,7 @@
       "NodeFilter"
     ]
   },
-  "dependencies": {
-    "@author.io/karma-base": "^1.1.2",
-    "karma-browserstack-launcher": "^1.4.0",
-    "leaked-handles": "^5.2.0",
-    "tape-catch": "^1.0.6"
-  },
+  "dependencies": {},
   "publishConfig": {
     "access": "public"
   }
