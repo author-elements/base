@@ -16,10 +16,10 @@ let customize = require('@author.io/karma-customelements')('test/es5', './dist/a
 // let customize = require('@author.io/karma-customelements')('SauceLabs')
 module.exports = config => {
   config.set(Object.assign(customize(config), {
-    captureTimeout: 65000,
-    browserNoActivityTimeout: 70000,
-    concurrency: 1,
-    logLevel: config.LOG_DEBUG
+    captureTimeout: 120000,
+    browserNoActivityTimeout: 120000,
+    concurrency: 3,
+    logLevel: config.LOG_INFO
   }))
 }
 // let preprocessors = (root) => {
