@@ -4,7 +4,8 @@ node_js:
 addons:
   browserstack:
     username: $BROWSERSTACK_USERNAME
-    access_key: $BROWSERSTACK_ACCESS_KEY
+    secure:
+      access_key: $BROWSERSTACK_ACCESS_KEY
   # sauce_connect: true
 script:
 - npm run test:es5
