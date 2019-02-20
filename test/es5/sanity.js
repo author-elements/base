@@ -5,4 +5,4 @@ test('Sanity', function (t) {
   t.end()
 })
 
-test.onFinish(() => process.exit(0))
+// test.onFinish(() => console.log('done'))
