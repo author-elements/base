@@ -6,19 +6,18 @@ let customize = require('@author.io/karma-customelements')('test/es5', './dist/a
 //   }))
 // }
 
-// require('leaked-handles').set({
-//   // fullStack: true, // use full stack traces
-//   timeout: 45000 // run every 30 seconds instead of 5.
-//   // debugSockets: true
-// })
+require('leaked-handles').set({
+  // fullStack: true, // use full stack traces
+  timeout: 10000 // run every 30 seconds instead of 5.
+  // debugSockets: true
+})
 
 // const path = require('path')
 // let customize = require('@author.io/karma-customelements')('SauceLabs')
 module.exports = config => {
   config.set(Object.assign(customize(config), {
     captureTimeout: 0,
-    concurrency: 1,
-    singleRun: false
+    concurrency: 1
   }))
 }
 // let preprocessors = (root) => {
