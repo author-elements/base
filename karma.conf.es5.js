@@ -17,7 +17,8 @@ let customize = require('@author.io/karma-customelements')('test/es5', './dist/a
 module.exports = config => {
   config.set(Object.assign(customize(config), {
     captureTimeout: 0,
-    concurrency: 1
+    concurrency: 1,
+    singleRun: false
   }))
 }
 // let preprocessors = (root) => {
