@@ -5,6 +5,8 @@ module.exports = config => {
     browserify: {
       transform: [ 'rollupify' ]
     },
-    concurrency: 1
+    concurrency: 1,
+    captureTimeout: 65000,
+    browserNoActivityTimeout: 70000
   }))
 }
