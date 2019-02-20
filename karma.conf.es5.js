@@ -18,7 +18,7 @@ module.exports = config => {
   config.set(Object.assign(customize(config), {
     captureTimeout: 0,
     concurrency: 1,
-    logLevel: config.DEBUG_INFO
+    logLevel: config.LOG_DEBUG
   }))
 }
 // let preprocessors = (root) => {
