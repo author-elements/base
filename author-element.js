@@ -69,6 +69,15 @@ const AuthorElement = superClass => class extends superClass {
       },
 
       /**
+       * @property styleRules
+       * Used internally to manage styling added to the component's internal stylesheet.
+       * @private
+       */
+      styleRules: {
+        value: {}
+      },
+
+      /**
        * @property initialize
        * Used internally to set up the element's Shadow Root and inject its template.
        * @private
@@ -116,16 +125,23 @@ const AuthorElement = superClass => class extends superClass {
 
           Object.defineProperty(this.PRIVATE, name, {
             get: () => {
-              if (this.PRIVATE.privateProperties[name] === null) {
-                return data.default
+              if (data.hasOwnProperty('get')) {
+                if (typeof data.get !== 'function') {
+                  return this.UTIL.throwError({
+                    type: 'type',
+                    message: 'Property getter must be a function'
+                  })
+                }
+
+                return data.get()
               }
 
-              return this.PRIVATE.privateProperties[name]
+              return this.PRIVATE.privateProperties[name] === null ? data.default : this.PRIVATE.privateProperties[name]
             },
 
             set: value => {
               if (data.readonly) {
-                return this.throwError({
+                return this.UTIL.throwError({
                   type: 'readonly',
                   vars: { prop: name }
                 })
@@ -148,7 +164,7 @@ const AuthorElement = superClass => class extends superClass {
         value: (name, data) => {
           let cfg = {
             set: value => {
-              this.throwError({
+              this.UTIL.throwError({
                 type: 'readonly',
                 vars: { prop: name }
               })
@@ -171,6 +187,67 @@ const AuthorElement = superClass => class extends superClass {
           }
 
           Object.defineProperty(this, name, cfg)
+        }
+      },
+
+      /**
+       * @method generateAuthorHTMLCollectionConstructor
+       * Generates a class constructor for an AuthorHTMLCollection
+       * @returns {AuthorHTMLCollection}
+       * @private
+       */
+      generateAuthorHTMLCollectionConstructor: {
+        value: function () {
+          let _p = new WeakMap()
+
+          let AuthorHTMLCollection = class AuthorHTMLCollection {
+            constructor (arr) {
+              _p.set(this, { arr })
+              arr.forEach((node, index) => {
+                this[index] = node
+
+                if (node.id) {
+                  this[node.id] = node
+                }
+              })
+            }
+
+            get length () {
+              return _p.get(this).arr.length
+            }
+
+            item (index) {
+              return _p.get(this).arr[index]
+            }
+
+            namedItem (name) {
+              let matches = _p.get(this).arr.filter(item => item.id === name || item.name === name)
+              return matches.length > 0 ? matches[0] : null
+            }
+
+            [Symbol.iterator] () {
+              let index = 0
+
+              return {
+                next: () => {
+                  let result = {
+                    value: _p.get(this).arr[index],
+                    done: !(index in _p.get(this).arr)
+                  }
+
+                  index++
+
+                  return result
+                }
+              }
+            }
+
+            [Symbol.toStringTag] () {
+              return 'AuthorHTMLCollection'
+            }
+          }
+
+          return AuthorHTMLCollection
         }
       },
 
@@ -216,7 +293,7 @@ const AuthorElement = superClass => class extends superClass {
               return this.setAttribute(name, '')
           }
         }
-      }
+      },
     })
 
     Object.defineProperties(this.UTIL, {
@@ -356,7 +433,7 @@ const AuthorElement = superClass => class extends superClass {
        */
       defineProperty: {
         value: (name, value) => {
-          if (typeof value !== 'object') {
+          if (typeof value !== 'object' || value === null) {
             this.PRIVATE.properties[name] = value
             this[name] = value
             return
@@ -401,8 +478,21 @@ const AuthorElement = superClass => class extends superClass {
           this.PRIVATE.properties[name] = data.default
 
           Object.defineProperty(this, name, {
-            get: () => this.PRIVATE.properties[name],
-            set: value => { this.PRIVATE.properties[name] = value }
+            get: () => {
+              if (data.hasOwnProperty('get')) {
+                return data.get()
+              }
+
+              return this.PRIVATE.properties[name] === null ? data.default : this.PRIVATE.properties[name]
+            },
+
+            set: value => {
+              if (data.hasOwnProperty('set')) {
+                return data.set(value)
+              }
+
+              this.PRIVATE.properties[name] = value
+            }
           })
         }
       },
@@ -499,6 +589,105 @@ const AuthorElement = superClass => class extends superClass {
       },
 
       /**
+       * @method insertStyleRule
+       * Inserts a new CSS rule-set into the component's shadow root style sheet.
+       * @param {string} name
+       * Unique identifier to be used as an accessor for this rule-set
+       * @param {string} selector
+       * CSS selector string
+       * @param {number} index [optional]
+       * Index at which to add the new style rule
+       */
+      insertStyleRule: {
+        value: (name, selector, index = this.PRIVATE.styleSheet.cssRules.length) => {
+          this.PRIVATE.styleSheet.insertRule(selector, index)
+          this.PRIVATE.styleRules[name] = {
+            default: this.PRIVATE.styleSheet.cssRules[index],
+          }
+
+          if (selector.includes(':host(')) {
+            selector = `${this.localName}${/\(([^)]+)\)/.exec(selector)[1]} {}`
+            index += 1
+
+            if (selector) {
+              this.PRIVATE.styleSheet.insertRule(selector, index)
+              this.PRIVATE.styleRules[name].legacy = this.PRIVATE.styleSheet.cssRules[index]
+            }
+          }
+        }
+      },
+
+      /**
+       * @method insertStyleRules
+       * Inserts one or more new CSS rule-sets into the component's shadow root style sheet.
+       * @param {object} rules
+       * CSS selector string or definition object. If using a definition object, the key name
+       * will be used as an accessor for this rule.
+       * @param {string} rules.selector
+       * CSS selector string
+       * @param {string} rules.index [optional]
+       * Index at which to insert the new rule into the style sheet.
+       * @private
+       */
+      insertStyleRules: {
+        value: rules => {
+          for (let rule in rules) {
+            let input = rules[rule]
+
+            if (typeof input === 'string') {
+              this.UTIL.insertStyleRule(rule, input)
+              continue
+            }
+
+            if (Array.isArray(input) || typeof input !== 'object') {
+              return this.UTIL.throwError({
+                type: 'type',
+                message: `Invalid Style Rule definition "${JSON.stringify(input)}". Definitions must either be a valid CSS selector string or an object`
+              })
+            }
+
+            if (!input.hasOwnProperty('selector')) {
+              return this.UTIL.throwError({
+                message: 'Style Rule Definition must include a "selector" property'
+              })
+            }
+
+            this.insertStyleRule(rule, input.selector, input.hasOwnProperty('index') ? input.index : null)
+          }
+        }
+      },
+
+      /**
+       * @method setStyleProperty
+       * Adds a new style declaration to the component's shadow root style sheet, or updates an existing one.
+       * @param {string} ruleName
+       * String identifier for the style rule to add the declaration to.
+       * @param {string} propertyName
+       * CSS property
+       * @param {string} propertyValue
+       * CSS property value
+       * @param {boolean} important [optional]
+       * true sets the important flag on this property declaration.
+       */
+      setStyleProperty: {
+        value: (ruleName, propertyName, propertyValue, important = false) => {
+          let rule = this.PRIVATE.styleRules[ruleName]
+
+          if (!rule) {
+            return this.UTIL.throwError({
+              message: `Style Rule "${ruleName}" not found`
+            })
+          }
+
+          rule.default.style.setProperty(propertyName, propertyValue, important ? 'important' : undefined)
+
+          if (rule.hasOwnProperty('legacy')) {
+            rule.legacy.style.setProperty(propertyName, propertyValue, important ? 'important' : undefined)
+          }
+        }
+      },
+
+      /**
        * @typedef {string} ErrorType (custom, dependency, readonly, reference, type)
        * Indentifier for JavaScript built-in Error types including:
        * Error, TypeError, ReferenceError, or custom Error
@@ -553,16 +742,20 @@ const AuthorElement = superClass => class extends superClass {
                 finalMessage += ` ${vars.url}`
               }
             }
+
           } else if (type === 'readonly') {
             finalMessage += `Cannot set read-only property`
 
             if (vars && vars.hasOwnProperty('prop')) {
               finalMessage += ` "${vars.prop}"`
             }
+
           } else if (type === 'reference') {
             error = new ReferenceError()
+
           } else if (type === 'type') {
             error = new TypeError()
+
           } else {
             return this.UTIL.throwError({
               message: `Unrecognized error type "${type}". Accepted types: "custom", "dependency", "readonly", "reference", "type"`
@@ -579,10 +772,10 @@ const AuthorElement = superClass => class extends superClass {
       },
 
       /**
-       * @typedef {string} ConsoleLogType (warning, error, info, log)
-       * Indentifier for window.console built-in methods including:
-       * warn(), error(), info(), log()
-       */
+        * @typedef {string} ConsoleLogType (warning, error, info, log)
+        * Indentifier for window.console built-in methods including:
+        * warn(), error(), info(), log()
+        */
 
       /**
        * @method printToConsole
@@ -616,15 +809,17 @@ const AuthorElement = superClass => class extends superClass {
        * Determines whether or not to observe changes to the descendants of the target node
        */
       monitorChildren: {
-        value: (callback, subtree = false) => {
+        value: (callback, cfg = null) => {
           this.childMonitor = new MutationObserver(callback)
 
-          this.childMonitor.observe(this, {
+          cfg = cfg || {
             childList: true,
             attributes: false,
             characterData: false,
-            subtree: typeof subtree === 'boolean' ? subtree : false
-          })
+            subtree: false
+          }
+
+          this.childMonitor.observe(this, cfg)
         }
       },
 
@@ -716,8 +911,11 @@ const AuthorElement = superClass => class extends superClass {
    * Fires once the element's children have been rendered to the DOM.
    */
   connectedCallback () {
-    this.emit('connected')
+    Object.defineProperty(this.PRIVATE, 'styleSheet', {
+      value: this.shadowRoot.styleSheets[0]
+    })
 
+    this.emit('connected')
     setTimeout(() => this.emit('rendered'), 0)
   }
 
