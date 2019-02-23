@@ -2,7 +2,7 @@ import buble from 'rollup-plugin-buble'
 import {uglify} from 'rollup-plugin-uglify'
 import {terser} from 'rollup-plugin-terser'
 
-const input = 'author-element.js'
+const input = 'author-base.js'
 const outdir = './dist'
 const format = 'iife'
 const pkg = require('./package.json')
