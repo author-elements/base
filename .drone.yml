@@ -36,7 +36,13 @@ steps:
         - tag
   - name: npm_release
     image: robertstettner/drone-npm-auth
-    secrets: [NPM_USERNAME, NPM_TOKEN, NPM_EMAIL]
+    environment:
+      npm_username:
+        from_secret: NPM_USERNAME
+      npm_token:
+        from_secret: NPM_TOKEN
+      npm_email:
+        from_secret: NPM_EMAIL
     folder: dist
     when:
       event:
