@@ -40,7 +40,7 @@ steps:
     folder: dist
     when:
       event:
-        - push
+        - tag
   - name: notification
     image: plugins/slack
     settings:
