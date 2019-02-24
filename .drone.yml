@@ -1,0 +1,47 @@
+kind: pipeline
+name: release
+
+steps:
+  - name: build
+    image: node
+    commands:
+      - npm install
+      - npm run build
+    when:
+      event:
+        - tag
+  - name: github_release
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: GITHUB_TOKEN
+      files: dist/**/*
+    when:
+      event:
+        - tag
+  - name: npm_release
+    image: robertstettner/drone-npm-auth
+    secrets: [NPM_USERNAME, NPM_TOKEN, NPM_EMAIL]
+    folder: dist
+    when:
+      event:
+        - tag
+  - name: notification
+    image: plugins/slack
+    settings:
+      webhook:
+        from_secret: SLACK_WEBHOOK
+      channel: releases
+      icon_url: https://avatars0.githubusercontent.com/u/46585558
+    when:
+      event:
+        - tag
+  - name: autotag
+    image: node
+    commands:
+      - npm install semver
+      - echo "const semver = require('semver');const pkg = require('./package.json');const exec = require('child_process').execSync;const latestPublishedVersion = JSON.parse(exec(`npm info ${pkg.name} --json`).toString()).versions.pop();!semver.gt(pkg.version, latestPublishedVersion) ? process.exit(1) : console.log(`Update release from ${latestPublishedVersion} --> ${pkg.version}`)" > release.js
+      - node release.js
+    when:
+      event:
+        - push
