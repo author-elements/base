@@ -35,13 +35,13 @@ steps:
       event:
         - tag
   - name: npm_release
-    image: robertstettner/drone-npm-auth
-    environment:
-      npm_username:
+    image: plugins/npm
+    settings:
+      username:
         from_secret: NPM_USERNAME
-      npm_token:
+      password:
         from_secret: NPM_TOKEN
-      npm_email:
+      email:
         from_secret: NPM_EMAIL
     folder: dist
     when:
