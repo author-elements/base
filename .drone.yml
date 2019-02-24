@@ -2,30 +2,6 @@ kind: pipeline
 name: release
 
 steps:
-  - name: build
-    image: node
-    commands:
-      - npm install
-      - npm run build
-    when:
-      event:
-        - tag
-  - name: github_release
-    image: plugins/github-release
-    settings:
-      api_key:
-        from_secret: GITHUB_TOKEN
-      files: dist/**/*
-    when:
-      event:
-        - tag
-  - name: npm_release
-    image: robertstettner/drone-npm-auth
-    secrets: [NPM_USERNAME, NPM_TOKEN, NPM_EMAIL]
-    folder: dist
-    when:
-      event:
-        - tag
   - name: autotag
     image: node
     environment:
@@ -35,8 +11,33 @@ steps:
         from_secret: GITHUB_KEY
     commands:
       - npm install semver
-      - echo "const semver = require('semver');const pkg = require('./package.json');const exec = require('child_process').execSync;const latestPublishedVersion = JSON.parse(exec('npm info ' + pkg.name + ' --json').toString()).versions.pop();if (!semver.gt(pkg.version, latestPublishedVersion)) { console.log('No update required. This build is for version ' + pkg.version + '. The latest published to npm is ' + latestPublishedVersion); process.exit(1); } else { console.log('Update release from ' + latestPublishedVersion + ' --> ' + pkg.version); let remote = process.env.DRONE_GIT_HTTP_URL.replace('://', '://' + process.env.GIT_USER + ':' + process.env.GIT_SECRET.replace('@', '%40') + '@'); exec('git remote rm origin && git remote add origin ' + remote); exec('git tag ' + pkg.version); exec('git push origin master --tags'); process.exit(0); }" > release.js
+      - echo "const semver = require('semver');const pkg = require('./package.json');const exec = require('child_process').execSync;const latestPublishedVersion = JSON.parse(exec('npm info ' + pkg.name + ' --json').toString()).versions.pop();if (!semver.gt(pkg.version, latestPublishedVersion)) { console.log('No update required. This build is for version ' + pkg.version + '. The latest published to npm is ' + latestPublishedVersion); process.exit(1); } else { console.log('Update release from ' + latestPublishedVersion + ' --> ' + pkg.version); process.exit(0); }" > release.js
+      # - echo "const semver = require('semver');const pkg = require('./package.json');const exec = require('child_process').execSync;const latestPublishedVersion = JSON.parse(exec('npm info ' + pkg.name + ' --json').toString()).versions.pop();if (!semver.gt(pkg.version, latestPublishedVersion)) { console.log('No update required. This build is for version ' + pkg.version + '. The latest published to npm is ' + latestPublishedVersion); process.exit(1); } else { console.log('Update release from ' + latestPublishedVersion + ' --> ' + pkg.version); let remote = process.env.DRONE_GIT_HTTP_URL.replace('://', '://' + process.env.GIT_USER + ':' + process.env.GIT_SECRET.replace('@', '%40') + '@'); exec('git remote rm origin && git remote add origin ' + remote); exec('git tag ' + pkg.version); exec('git push origin master --tags'); process.exit(0); }" > release.js
       - node release.js
+    when:
+      event:
+        - push
+  - name: build
+    image: node
+    commands:
+      - npm install
+      - npm run build
+    when:
+      event:
+        - push
+  - name: github_release
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: GITHUB_TOKEN
+      files: dist/**/*
+    when:
+      event:
+        - push
+  - name: npm_release
+    image: robertstettner/drone-npm-auth
+    secrets: [NPM_USERNAME, NPM_TOKEN, NPM_EMAIL]
+    folder: dist
     when:
       event:
         - push
@@ -49,5 +50,4 @@ steps:
       icon_url: https://avatars0.githubusercontent.com/u/46585558
     when:
       event:
-        - tag
         - push
