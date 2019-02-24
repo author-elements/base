@@ -40,7 +40,7 @@ steps:
       username:
         from_secret: NPM_USERNAME
       password:
-        from_secret: NPM_TOKEN
+        from_secret: NPM_PASSWORD
       email:
         from_secret: NPM_EMAIL
     folder: dist
