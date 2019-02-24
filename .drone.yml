@@ -53,11 +53,11 @@ steps:
       channel: releases
       icon_url: https://avatars0.githubusercontent.com/u/46585558?s=32
       template: >
-      {{#success build.status}}
-        Release {{build.tag}} (build {{build.number}}) succeeded.
-      {{else}}
-        Release {{build.tag}} (build {{build.number}}) failed.
-      {{/success}}
+        {{#success build.status}}
+          Release {{build.tag}} (build {{build.number}}) succeeded.
+        {{else}}
+          Release {{build.tag}} (build {{build.number}}) failed.
+        {{/success}}
     when:
       event:
         - tag
