@@ -38,9 +38,14 @@ steps:
         - tag
   - name: autotag
     image: node
+    settings:
+      username:
+        from_secret: GITHUB_USERNAME
+      password:
+        from_secret: GITHUB_KEY
     commands:
       - npm install semver
-      - echo "const semver = require('semver');const pkg = require('./package.json');const exec = require('child_process').execSync;const latestPublishedVersion = JSON.parse(exec('npm info ' + pkg.name + ' --json').toString()).versions.pop();if (!semver.gt(pkg.version, latestPublishedVersion)) { console.log('No update required. This build is for version ' + pkg.version + '. The latest published to npm is ' + latestPublishedVersion); process.exit(1); } else {console.log(process.env); console.log('Update release from ' + latestPublishedVersion + ' --> ' + pkg.version); exec('git remote rm origin && git remote add origin ' + process.env.DRONE_GIT_HTTP_URL.replace('://', '://' + process.env.DRONE_COMMIT_AUTHOR + ':' + process.env.GITHUB_TOKEN + '@')); exec('git tag ' + pkg.version); exec('git push origin master --tags'); process.exit(0); }" > release.js
+      - echo "const semver = require('semver');const pkg = require('./package.json');const exec = require('child_process').execSync;const latestPublishedVersion = JSON.parse(exec('npm info ' + pkg.name + ' --json').toString()).versions.pop();if (!semver.gt(pkg.version, latestPublishedVersion)) { console.log('No update required. This build is for version ' + pkg.version + '. The latest published to npm is ' + latestPublishedVersion); process.exit(1); } else {console.log(process.env); console.log('Update release from ' + latestPublishedVersion + ' --> ' + pkg.version); exec('git tag ' + pkg.version); exec('git push origin master --tags'); process.exit(0); }" > release.js
       - cat release.js
       - node release.js
     when:
