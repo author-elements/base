@@ -28,7 +28,7 @@ You only need to choose one of these files. If you need to support Internet Expl
 ```html
 <html>
   <head>
-    <script src="https://cdn.author.io/author-element/base/1.0.0.min.js"></script>
+    <script src="https://cdn.author.io/author-elements/base/1.0.0/component.min.js"></script>
     <script src="https://cdn.author.io/element/whatever/element.min.js"></script>
   </head>
 </html>
