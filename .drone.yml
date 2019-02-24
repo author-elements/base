@@ -24,7 +24,7 @@ steps:
       - npm run build
     when:
       event:
-        - push
+        - tag
   - name: github_release
     image: plugins/github-release
     settings:
@@ -51,4 +51,3 @@ steps:
     when:
       event:
         - tag
-        - push
