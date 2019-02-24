@@ -1,8 +1,8 @@
 {
   "name": "@author.io/element-base",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0",
   "description": "Base class for all author-* custom elements (web components).",
-  "main": "dist/author-element.min.js",
+  "main": "dist/author-base.min.js",
   "scripts": {
     "build": "npm run clean && rollup -c ./rollup.release.config.js",
     "clean": "node clean.js",

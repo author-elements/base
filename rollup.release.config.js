@@ -11,7 +11,7 @@ const banner = `// Copyright (c) ${(new Date()).getFullYear()} ${pkg.author.name
 const output = file => {
 	return {
 		name: 'AuthorElement',
-		file: `${outdir}/${file}`,
+		file: `${outdir}/${input.replace(require('path').extname(input), '')}${file}`,
 		format,
 		banner,
 		sourcemap: true
@@ -26,7 +26,7 @@ export default [
 			terser()
 		],
 		output: [
-			output('author-element.min.js')
+			output('.min.js')
 		]
 	},
 
@@ -38,7 +38,7 @@ export default [
 			uglify()
 		],
 		output: [
-			output('author-element.es5.min.js')
+			output('.es5.min.js')
 		]
 	},
 
@@ -47,7 +47,7 @@ export default [
 		input,
 		plugins: [],
 		output: [
-			output('author-element.js')
+			output('.js')
 		]
 	},
 
@@ -58,7 +58,7 @@ export default [
 			buble()
 		],
 		output: [
-			output('author-element.es5.js')
+			output('.es5.js')
 		]
 	}
 ]
