@@ -43,7 +43,6 @@ steps:
         from_secret: NPM_PASSWORD
       email:
         from_secret: NPM_EMAIL
-    folder: dist
     when:
       event:
         - tag
