@@ -23,7 +23,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/author-components/base.git"
+    "url": "git+https://github.com/author-elements/base.git"
   },
   "keywords": [
     "web",
@@ -50,9 +50,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/author-components/base/issues"
+    "url": "https://github.com/author-elements/base/issues"
   },
-  "homepage": "https://github.com/author-components/base#readme",
+  "homepage": "https://github.com/author-elements/base#readme",
   "devDependencies": {
     "@author.io/karma-customelements": "^1.1.11",
     "fs-extra": "^7.0.1",
