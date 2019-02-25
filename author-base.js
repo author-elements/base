@@ -251,6 +251,20 @@ const AuthorElement = superClass => class extends superClass {
         }
       },
 
+      getStyleRule: {
+        value: name => {
+          let rule = this.PRIVATE.styleRules[name]
+
+          if (!rule) {
+            return this.UTIL.throwError({
+              message: `Style Rule "${name}" not found`
+            })
+          }
+
+          return rule
+        }
+      },
+
       /**
        * @method getBooleanAttributeValue
        * Used internally. Returns a validated boolean attribute value.
@@ -627,7 +641,6 @@ const AuthorElement = superClass => class extends superClass {
        * CSS selector string
        * @param {string} rules.index [optional]
        * Index at which to insert the new rule into the style sheet.
-       * @private
        */
       insertStyleRules: {
         value: rules => {
@@ -658,6 +671,47 @@ const AuthorElement = superClass => class extends superClass {
       },
 
       /**
+       * @method removeStyleProperty
+       * Removes a style property declaration from the specified rule in the component's shadow root style sheet.
+       * @param {string} ruleName
+       * Name of the rule
+       * @param {string} propertyName
+       * CSS property name
+       */
+      removeStyleProperty: {
+        value: (ruleName, propertyName) => {
+          let rule = this.PRIVATE.getStyleRule(ruleName)
+
+          rule.default.style.removeProperty(propertyName)
+
+          if (rule.hasOwnProperty('legacy')) {
+            rule.legacy.style.removeProperty(propertyName)
+          }
+        }
+      },
+
+      /**
+       * @method removeStyleProperties
+       * Removes a set of style property declarations from the specified rule in the component's shadow root style sheet.
+       * @param {string} ruleName
+       * Name of the rule
+       * @param {array} propertyNames
+       * Names of the CSS properties to remove
+       */
+      removeStyleProperties: {
+        value: (ruleName, propertyNames) => {
+          if (!Array.isArray(propertyNames)) {
+            return this.UTIL.throwError({
+              type: 'type',
+              message: `Style property names must be an array of strings`
+            })
+          }
+
+          propertyNames.forEach(propertyName => this.UTIL.removeStyleProperty(ruleName, propertyName))
+        }
+      },
+
+      /**
        * @method setStyleProperty
        * Adds a new style declaration to the component's shadow root style sheet, or updates an existing one.
        * @param {string} ruleName
@@ -671,19 +725,41 @@ const AuthorElement = superClass => class extends superClass {
        */
       setStyleProperty: {
         value: (ruleName, propertyName, propertyValue, important = false) => {
-          let rule = this.PRIVATE.styleRules[ruleName]
-
-          if (!rule) {
-            return this.UTIL.throwError({
-              message: `Style Rule "${ruleName}" not found`
-            })
-          }
+          let rule = this.PRIVATE.getStyleRule(ruleName)
 
           rule.default.style.setProperty(propertyName, propertyValue, important ? 'important' : undefined)
 
           if (rule.hasOwnProperty('legacy')) {
             rule.legacy.style.setProperty(propertyName, propertyValue, important ? 'important' : undefined)
           }
+        }
+      },
+
+      /**
+       * @method setStyleProperties
+       * Adds a set of new style declarations to the component's shadow root style sheet, or updates existing ones.
+       * @param {string} ruleName
+       * String identifier for the style rule to add the declaration to.
+       * @param {array} properties
+       * Array of objects of shape: {
+       *   name: {string} CSS property name,
+       *   value: {string} CSS property value,
+       *   important: {boolean} Determines whether or not to set the !important flag [optional]
+       * }
+       */
+      setStyleProperties: {
+        value: (ruleName, properties) => {
+          if (!Array.isArray(properties)) {
+            return this.UTIL.throwError({
+              type: 'type',
+              message: `Style properties must be an array of objects`
+            })
+          }
+
+          properties.forEach(property => {
+            let important = property.hasOwnProperty('important') && property.important === true
+            this.UTIL.setStyleProperty(ruleName, property.name, property.value, important)
+          })
         }
       },
 
@@ -912,7 +988,7 @@ const AuthorElement = superClass => class extends superClass {
    */
   connectedCallback () {
     Object.defineProperty(this.PRIVATE, 'styleSheet', {
-      value: this.shadowRoot.styleSheets[0]
+      value: this.shadowRoot.querySelector('style').sheet
     })
 
     this.emit('connected')
