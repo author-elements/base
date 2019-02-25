@@ -53,11 +53,14 @@ steps:
       channel: releases
       icon_url: https://avatars0.githubusercontent.com/u/46585558?s=32
       template: >
-        Release <a href="https://github.com/{{repo.owner}}/{{repo.name}}/releases/tag/{{build.tag}}">{{build.tag}}</a> (build <a href="{{build.link}}">{{build.number}}</a>){{#success build.status}}succeeded{{else}}failed{{/success}}.
+        Release {{build.tag}} (build {{build.number}}) {{#success build.status}}succeeded{{else}}failed{{/success}}.
+        {{build.link}}
+
         {{#success build.status}}
-          <b>Availability:</b>
-          <li>CDN: <a href="https://cdn.author.io/{{repo.owner}}/{{repo.name}}/{{build.tag}}/author-{{repo.name}}.js">https://cdn.author.io/{{repo.owner}}/{{repo.name}}/{{build.tag}}/author-{{repo.name}}.js</a></li>
-          <li>npm: `npm install @author.io/elment-base@{{build.tag}}`</li>
+        Availability:
+        - CDN: https://cdn.author.io/{{repo.owner}}/{{repo.name}}/{{build.tag}}/author-{{repo.name}}.js
+        - npm: `npm install @author.io/element-{{repo.name}}@{{build.tag}}`
+        - Release: https://github.com/{{repo.owner}}/{{repo.name}}/releases/tag/{{build.tag}}
         {{/success}}
     when:
       event:
