@@ -15,7 +15,7 @@ steps:
     when:
       event:
         - push
-  - name: notification
+  - name: tag_notification
     image: plugins/slack
     settings:
       webhook:
@@ -59,7 +59,7 @@ steps:
     when:
       event:
         - tag
-  - name: notification
+  - name: release_notification
     image: plugins/slack
     settings:
       webhook:
