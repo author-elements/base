@@ -1,4 +1,4 @@
-const AuthorElement = superClass => class extends superClass {
+const AuthorBaseElement = superClass => class extends superClass {
   constructor (templateString) {
     super()
 
@@ -1048,4 +1048,4 @@ const AuthorElement = superClass => class extends superClass {
   }
 }
 
-export default AuthorElement
+export default AuthorBaseElement

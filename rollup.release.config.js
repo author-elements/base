@@ -2,7 +2,8 @@ import buble from 'rollup-plugin-buble'
 import {uglify} from 'rollup-plugin-uglify'
 import {terser} from 'rollup-plugin-terser'
 
-const input = 'author-base.js'
+const input = './src/element.js'
+const outfile = 'author-base.js'
 const outdir = './dist'
 const format = 'iife'
 const pkg = require('./package.json')
@@ -10,8 +11,8 @@ const banner = `// Copyright (c) ${(new Date()).getFullYear()} ${pkg.author.name
 
 const output = file => {
 	return {
-		name: 'AuthorElement',
-		file: `${outdir}/${input.replace(require('path').extname(input), '')}${file}`,
+		name: 'AuthorBaseElement',
+		file: `${outdir}/${outfile.replace(require('path').extname(outfile), '')}${file}`,
 		format,
 		banner,
 		sourcemap: true
