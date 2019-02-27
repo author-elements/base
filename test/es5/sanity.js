@@ -1,7 +1,7 @@
 var test = require('tape').test
 
 test('Sanity', function (t) {
-  t.ok(typeof AuthorElement === 'function', 'Base class detected.')
+  t.ok(typeof AuthorBaseElement === 'function', 'Base class detected.')
   t.end()
 })
 

@@ -1,9 +1,9 @@
-import AuthorElement from '../../author-element.js'
+import AuthorBaseElement from '../../author-base.js'
 
 const test = require('tape').test
 
 test('Sanity', t => {
-  t.ok(typeof AuthorElement === 'function', 'Base class detected.')
+  t.ok(typeof AuthorBaseElement === 'function', 'Base class detected.')
   t.end()
 })
 

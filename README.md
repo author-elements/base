@@ -1,4 +1,4 @@
-# AuthorElement [![](https://data.jsdelivr.com/v1/package/npm/@author.io/element-base/badge)](https://www.jsdelivr.com/package/npm/@author.io/element-base?path=dist) [![Build Status](https://travis-ci.org/author-elements/base.svg?branch=master&style=for-the-badge)](https://travis-ci.org/author-elements/base)
+# AuthorBaseElement [![](https://data.jsdelivr.com/v1/package/npm/@author.io/element-base/badge)](https://www.jsdelivr.com/package/npm/@author.io/element-base?path=dist) [![Build Status](https://travis-ci.org/author-elements/base.svg?branch=master&style=for-the-badge)](https://travis-ci.org/author-elements/base)
 
 This is the base class used to build Author.io custom HTML elements (web components). It provides incredibly lightweight utilities and was designed for optimizing all `<author-*>` custom tags.
 

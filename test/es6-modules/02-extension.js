@@ -1,9 +1,9 @@
-import AuthorElement from '../../author-element.js'
+import AuthorBaseElement from '../../author-base.js'
 
 const test = require('tape').test
 
 test('Extend Class', t => {
-  class DummyElement extends AuthorElement(HTMLElement) {
+  class DummyElement extends AuthorBaseElement(HTMLElement) {
     constructor () {
       super('<template><slot></slot></template>')
     }
