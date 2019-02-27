@@ -23,7 +23,7 @@ steps:
       channel: releases
       icon_url: https://avatars0.githubusercontent.com/u/46585558?s=32
       template: >
-        Autotag on {{build.event}} to {{repo.owner}}/{{repo.name}} failed ({{build.tag}}). See {{build.link}} for details.
+        <author-{{repo.name}}> autotag on {{build.event}} to {{repo.owner}}/{{repo.name}} failed ({{build.tag}}). See {{build.link}} for details.
       icon_emoji: warning
     when:
       status: [ failure ]
