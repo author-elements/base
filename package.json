@@ -1,6 +1,6 @@
 {
   "name": "@author.io/element-base",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Base class for all author-* custom elements (web components).",
   "main": "dist/author-base.min.js",
   "scripts": {
@@ -55,10 +55,12 @@
   "homepage": "https://github.com/author-elements/base#readme",
   "devDependencies": {
     "@author.io/karma-customelements": "^1.1.11",
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
     "fs-extra": "^7.0.1",
-    "karma": "^4.0.0",
+    "karma": "^4.0.1",
     "rollup": "^1.1.0",
-    "rollup-plugin-buble": "^0.19.6",
+    "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-terser": "^4.0.2",
     "rollup-plugin-uglify": "^6.0.1",
     "rollupify": "^0.5.1",
