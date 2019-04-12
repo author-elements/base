@@ -908,6 +908,20 @@ const AuthorBaseElement = superClass => class extends superClass {
       },
 
       /**
+       * @method disableChildMonitor
+       * Disable monitoring of child elements.
+       * Disconnects MutationObserver and sets this.childMonitor to null.
+       */
+      disableChildMonitor: {
+        value: () => {
+          if (this.childMonitor) {
+            this.childMonitor.disconnect()
+            this.childMonitor = null
+          }
+        }
+      },
+
+      /**
        * @method registerListener
        * Applies an event listener. This listener will be automatically cleaned up
        * upon element disconnect.
