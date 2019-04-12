@@ -806,34 +806,42 @@ const AuthorBaseElement = superClass => class extends superClass {
           let error = new Error()
           let { vars } = properties
 
-          if (type === 'dependency') {
-            finalMessage += 'Missing dependency'
+          switch (type) {
+            case 'custom': break
 
-            if (vars) {
-              if (vars.hasOwnProperty('name')) {
-                finalMessage += `: ${vars.name}`
+            case 'dependency':
+              finalMessage += 'Missing dependency'
+
+              if (vars) {
+                if (vars.hasOwnProperty('name')) {
+                  finalMessage += `: ${vars.name}`
+                }
+
+                if (vars.hasOwnProperty('url')) {
+                  finalMessage += ` ${vars.url}`
+                }
               }
 
-              if (vars.hasOwnProperty('url')) {
-                finalMessage += ` ${vars.url}`
+              break
+
+            case 'readonly':
+              finalMessage += `Cannot set read-only property`
+
+              if (vars && vars.hasOwnProperty('prop')) {
+                finalMessage += ` "${vars.prop}"`
               }
-            }
 
-          } else if (type === 'readonly') {
-            finalMessage += `Cannot set read-only property`
+              break
 
-            if (vars && vars.hasOwnProperty('prop')) {
-              finalMessage += ` "${vars.prop}"`
-            }
+            case 'reference':
+              error = new ReferenceError()
+              break
 
-          } else if (type === 'reference') {
-            error = new ReferenceError()
+            case 'type':
+              error = new TypeError()
+              break
 
-          } else if (type === 'type') {
-            error = new TypeError()
-
-          } else {
-            return this.UTIL.throwError({
+            default: return this.UTIL.throwError({
               message: `Unrecognized error type "${type}". Accepted types: "custom", "dependency", "readonly", "reference", "type"`
             })
           }
