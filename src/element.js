@@ -979,6 +979,10 @@ const AuthorBaseElement = superClass => class extends superClass {
    * Fires after change has been applied to matching properties.
    */
   attributeChangedCallback (attribute, oldValue, newValue) {
+    if (newValue === oldValue) {
+      return
+    }
+
     this.emit('attribute.change', {
       attribute,
       oldValue,
@@ -1046,6 +1050,7 @@ const AuthorBaseElement = superClass => class extends superClass {
     }
 
     this.dispatchEvent(event)
+    return event
   }
 
   /**
