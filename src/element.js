@@ -602,6 +602,22 @@ const AuthorBaseElement = superClass => class extends superClass {
         }
       },
 
+      getPercentageDecimal: {
+        value: (portion, whole, decimalPlaces = null) => {
+          let decimal = portion / whole
+
+          if (decimal < 0) {
+            return 0
+          }
+
+          if (decimalPlaces !== null) {
+            return decimal.toFixed(decimalPlaces)
+          }
+
+          return decimal
+        }
+      },
+
       /**
        * @method insertStyleRule
        * Inserts a new CSS rule-set into the component's shadow root style sheet.
