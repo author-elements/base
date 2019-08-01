@@ -561,21 +561,6 @@ const AuthorBaseElement = superClass => class extends superClass {
       },
 
       /**
-       * @method createEvent
-       * Returns a new CustomEvent object.
-       * @param  {[type]} name
-       * Name of the event
-       * @param  {object} detail
-       * Properties to add to event.detail
-       * @return {CustomEvent}
-       */
-      createEvent: {
-        value: (name, detail) => {
-          return new CustomEvent(name, { detail })
-        }
-      },
-
-      /**
        * @method generateGuid
        * @param  {string} [prefix=null]
        * String to prepend to the beginning of the id.
@@ -1058,16 +1043,37 @@ const AuthorBaseElement = superClass => class extends superClass {
    * @param  {HTMLElement} [target=null]
    * DOM node to fire the event at.
    */
-  emit (name, detail, target = null) {
-    let event = this.UTIL.createEvent(name, detail)
+   emit ({
+     name = null,
+     detail = null,
+     cfg = {
+       bubbles: false,
+       cancelable: false,
+       composed: false
+     },
+     target = null
+   }) {
+     if (typeof arguments[0] === 'string') {
+       name = arguments[0]
+       detail = arguments[1] || null
+       target = arguments[2] || null
+     }
 
-    if (target) {
-      return target.dispatchEvent(event)
-    }
+     if (!name) {
+       return this.UTIL.throwError({
+         message: 'Event name is required'
+       })
+     }
 
-    this.dispatchEvent(event)
-    return event
-  }
+     let event = new CustomEvent(name, Object.assign({}, cfg, { detail }))
+
+     if (target) {
+       return target.dispatchEvent(event)
+     }
+
+     this.dispatchEvent(event)
+     return event
+   }
 
   /**
    * @method off
