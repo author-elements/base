@@ -932,13 +932,14 @@ const AuthorBaseElement = superClass => class extends superClass {
        * Name of the event to listen to.
        * @param {function} callback
        * Function to call upon firing of the event.
+       * @param {boolean} capture
        */
       registerListener: {
-        value: (element, evtName, callback) => {
+        value: (element, evtName, callback, capture = false) => {
           let listener = {
             id: `listener_${this.UTIL.generateGuid()}`,
-            apply: () => element.addEventListener(evtName, callback),
-            remove: () => element.removeEventListener(evtName, callback)
+            apply: () => element.addEventListener(evtName, callback, capture),
+            remove: () => element.removeEventListener(evtName, callback, capture)
           }
 
           this.PRIVATE.listeners.push(listener)
@@ -1090,10 +1091,11 @@ const AuthorBaseElement = superClass => class extends superClass {
    * Convenience method. Attaches an event listener to the element.
    * @param  {string}   evtName
    * @param  {function} handler
+   * @param  {boolean} capture
    * Called when the event is fired.
    */
-  on (evtName, handler) {
-    this.addEventListener(evtName, handler)
+  on (evtName, handler, capture = false) {
+    this.addEventListener(evtName, handler, capture)
   }
 }
 
